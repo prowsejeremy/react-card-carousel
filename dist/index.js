@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react');
+var react = require('react');
 
 const CardCarousel = props => {
   const {
@@ -17,27 +17,27 @@ const CardCarousel = props => {
     ...defaultSettings,
     ...settings
   };
-  const [itemsWrapperWidth, setItemsWrapperWidth] = React.useState(null);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [transitionIndex, setTransitionIndex] = React.useState(0);
-  const [itemCount, setItemCount] = React.useState(0);
+  const [itemsWrapperWidth, setItemsWrapperWidth] = react.useState(null);
+  const [currentIndex, setCurrentIndex] = react.useState(0);
+  const [transitionIndex, setTransitionIndex] = react.useState(0);
+  const [itemCount, setItemCount] = react.useState(0);
   let touchStartVal = 0;
   let touchChangeThreshold = 100;
-  const carouselItemsRef = React.useRef();
-  const carouselWrapperRef = React.useRef();
-  React.useEffect(() => {
+  const carouselItemsRef = react.useRef();
+  const carouselWrapperRef = react.useRef();
+  react.useEffect(() => {
     setItemCount(children.length - 1);
   }, [children.length]);
-  React.useEffect(() => {
+  react.useEffect(() => {
     getItemsWrapperWidth();
   }, [carouselItemsRef.current]);
-  React.useEffect(() => {
+  react.useEffect(() => {
     window.addEventListener('resize', getItemsWrapperWidth);
     return () => {
       window.removeEventListener('resize', getItemsWrapperWidth);
     };
   }, [typeof window !== undefined]);
-  React.useEffect(() => {
+  react.useEffect(() => {
     handleMove(transitionIndex);
   }, [transitionIndex]);
   const getItemsWrapperWidth = () => {

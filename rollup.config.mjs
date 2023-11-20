@@ -1,25 +1,25 @@
+import { babel } from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
-import external from 'rollup-plugin-peer-deps-external';
 import css from 'rollup-plugin-import-css';
+
+import pkg from './package.json' assert { type: "json" };
 
 export default {
   input: 'src/index.js',
   output: [
-    { file: 'dist/index.js', format: 'cjs' },
-    { file: 'dist/index.es.js', format: 'esm' }
+    { file: pkg.main, format: 'cjs' },
+    { file: pkg.module, format: 'esm' }
   ],
   plugins: [
-    external(),
     resolve({
-      extensions: ['.js', '.jsx']
-    }),
+			moduleDirectories: ['node_modules']
+		}),
     babel({
       babelHelpers: 'bundled',
-      presets: ['@babel/preset-react'],
-      extensions: ['.js', '.jsx']
+      exclude: 'node_modules/**',
+      presets: ['@babel/preset-react']
     }),
     css(),
     commonjs(),
@@ -27,5 +27,5 @@ export default {
       preventAssignment: false
     })
   ],
-  external: ["react"]
+  external: ['react']
 }

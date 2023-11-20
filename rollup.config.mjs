@@ -24,5 +24,6 @@ export default {
     replace({
       preventAssignment: false
     })
-  ]
+  ],
+  external: ["react"]
 }

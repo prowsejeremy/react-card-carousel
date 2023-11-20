@@ -1,4 +1,34 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = ".cardCarousel {\n  padding: 0 2rem;\n  position: relative;\n}\n\n.cardCarouselInner {\n  position: relative;\n}\n\n.carouselItems {\n  transition: all 400ms ease-out;\n  position: relative;\n}\n\n.carouselItemContent {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.carousel-arrow {\n  position: absolute;\n  top: calc(50% - 3rem);\n\n  width: 6rem;\n  height: 6rem;\n  z-index: 10;\n\n  opacity: 1;\n  visibility: visible;\n\n  transition: all 400ms ease-out;\n}\n\n.carousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n\n.prev-button {\n  left: 2rem;\n}\n\n.next-button {\n  right: 2rem;\n}\n\n@media screen and (min-width: 768px) {\n  .cardCarousel {\n    padding: 0 10rem;\n  }\n\n  .prev-button {\n    left: 5rem;\n  }\n  \n  .next-button {\n    right: 5rem;\n  }\n}";
+styleInject(css_248z);
 
 const CardCarousel = props => {
   const {

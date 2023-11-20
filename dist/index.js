@@ -1,6 +1,36 @@
 'use strict';
 
-var react = require('react');
+var React = require('react');
+
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = ".cardCarousel {\n  padding: 0 2rem;\n  position: relative;\n}\n\n.cardCarouselInner {\n  position: relative;\n}\n\n.carouselItems {\n  transition: all 400ms ease-out;\n  position: relative;\n}\n\n.carouselItemContent {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.carousel-arrow {\n  position: absolute;\n  top: calc(50% - 3rem);\n\n  width: 6rem;\n  height: 6rem;\n  z-index: 10;\n\n  opacity: 1;\n  visibility: visible;\n\n  transition: all 400ms ease-out;\n}\n\n.carousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n\n.prev-button {\n  left: 2rem;\n}\n\n.next-button {\n  right: 2rem;\n}\n\n@media screen and (min-width: 768px) {\n  .cardCarousel {\n    padding: 0 10rem;\n  }\n\n  .prev-button {\n    left: 5rem;\n  }\n  \n  .next-button {\n    right: 5rem;\n  }\n}";
+styleInject(css_248z);
 
 const CardCarousel = props => {
   const {
@@ -17,27 +47,27 @@ const CardCarousel = props => {
     ...defaultSettings,
     ...settings
   };
-  const [itemsWrapperWidth, setItemsWrapperWidth] = react.useState(null);
-  const [currentIndex, setCurrentIndex] = react.useState(0);
-  const [transitionIndex, setTransitionIndex] = react.useState(0);
-  const [itemCount, setItemCount] = react.useState(0);
+  const [itemsWrapperWidth, setItemsWrapperWidth] = React.useState(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [transitionIndex, setTransitionIndex] = React.useState(0);
+  const [itemCount, setItemCount] = React.useState(0);
   let touchStartVal = 0;
   let touchChangeThreshold = 100;
-  const carouselItemsRef = react.useRef();
-  const carouselWrapperRef = react.useRef();
-  react.useEffect(() => {
+  const carouselItemsRef = React.useRef();
+  const carouselWrapperRef = React.useRef();
+  React.useEffect(() => {
     setItemCount(children.length - 1);
   }, [children.length]);
-  react.useEffect(() => {
+  React.useEffect(() => {
     getItemsWrapperWidth();
   }, [carouselItemsRef.current]);
-  react.useEffect(() => {
+  React.useEffect(() => {
     window.addEventListener('resize', getItemsWrapperWidth);
     return () => {
       window.removeEventListener('resize', getItemsWrapperWidth);
     };
   }, [typeof window !== undefined]);
-  react.useEffect(() => {
+  React.useEffect(() => {
     handleMove(transitionIndex);
   }, [transitionIndex]);
   const getItemsWrapperWidth = () => {

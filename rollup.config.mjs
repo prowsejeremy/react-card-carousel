@@ -1,7 +1,8 @@
-import nodeResolve from '@rollup/plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
+import external from 'rollup-plugin-peer-deps-external';
 import css from 'rollup-plugin-import-css';
 
 export default {
@@ -11,7 +12,8 @@ export default {
     { file: 'dist/index.es.js', format: 'esm' }
   ],
   plugins: [
-    nodeResolve({
+    external(),
+    resolve({
       extensions: ['.js', '.jsx']
     }),
     babel({

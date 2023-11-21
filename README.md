@@ -63,8 +63,8 @@ const MyComponent = () => {
     <div className='my-component'>
 
       {/* Optionally you can define your own completely custom buttons */}
-      <button onClick={ myCarouselRef?.current?.prevCard }>Prev</button>
-      <button onClick={ myCarouselRef?.current?.nextCard }>Next</button>
+      <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button>
+      <button onClick={ () => myCarouselRef?.current?.nextCard() }>Next</button>
 
       <CardCarousel ref={myCarouselRef} settings={settings}>
         {

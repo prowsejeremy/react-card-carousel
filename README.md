@@ -24,6 +24,12 @@ Example usage:
 
   const MyComponent = () => {
 
+    const settings = {
+      pagination: true,
+      arrows: false,
+      touchControls: true
+    }
+
     const carouselItems = [
       {
         title: 'Carousel Card 01',
@@ -43,7 +49,7 @@ Example usage:
     ]
 
     return (
-      <CardCarousel>
+      <CardCarousel settings={settings}>
         {
           carouselItems?.map((card, key) => {
             return (

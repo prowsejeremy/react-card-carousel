@@ -172,7 +172,10 @@ const CardCarousel = /*#__PURE__*/React.forwardRef((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     nextCard,
     prevCard,
-    goToCard: index => goToCard(index)
+    goToCard: index => goToCard(index),
+    getCurrentIndex: () => {
+      return currentIndex;
+    }
   }));
 
   // Generate pagination markup

@@ -175,7 +175,8 @@ const CardCarousel = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     nextCard,
     prevCard,
-    goToCard: (index) => goToCard(index)
+    goToCard: (index) => goToCard(index),
+    getCurrentIndex: () => {return currentIndex}
   }));
 
 

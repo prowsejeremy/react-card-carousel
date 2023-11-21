@@ -1,5 +1,5 @@
 {
-  "name": "react-card-carousel",
+  "name": "card-carousel-react",
   "version": "0.0.3",
   "description": "",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prowsejeremy/react-card-carousel.git"
+    "url": "git+https://github.com/prowsejeremy/card-carousel-react.git"
   },
   "keywords": [
     "react",
@@ -19,12 +19,12 @@
     "javascript",
     "js"
   ],
-  "author": "Jeremy Prowse",
+  "author": "Jeremy Prowse <jpd.nz> (https://jpd.nz)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/prowsejeremy/react-card-carousel/issues"
+    "url": "https://github.com/prowsejeremy/card-carousel-react/issues"
   },
-  "homepage": "https://github.com/prowsejeremy/react-card-carousel#readme",
+  "homepage": "https://github.com/prowsejeremy/card-carousel-react#readme",
   "dependencies": {
     "react": "^18.2.0"
   },

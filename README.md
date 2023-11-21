@@ -1,5 +1,5 @@
 # React Card Carousel
-### react-card-carousel
+### card-carousel-react
 
 A basic card carousel for react, usable with items of either fixed or varying widths.
 
@@ -9,11 +9,11 @@ A basic card carousel for react, usable with items of either fixed or varying wi
 Instal the package via npm or yarn:
 
 ```
-npm i -s https://github.com/prowsejeremy/react-card-carousel
+npm i -s card-carousel-react
 ```
 
 ```
-yarn add https://github.com/prowsejeremy/react-card-carousel
+yarn add card-carousel-react
 ```
 
 
@@ -23,7 +23,7 @@ Example usage:
 
 ```
 import { useRef } from 'react'
-import CardCarousel from 'react-card-carousel'
+import CardCarousel from 'card-carousel-react'
 
 const MyComponent = () => {
 

@@ -23,7 +23,7 @@ Example usage:
 
 ```
 import { useRef } from 'react'
-import CardCarousel from 'react-card-carousel'
+import CardCarousel from '@jpd.nz/react-card-carousel'
 
 const MyComponent = () => {
 

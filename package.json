@@ -21,6 +21,10 @@
   ],
   "author": "Jeremy Prowse <jpd.nz> (https://jpd.nz)",
   "license": "MIT",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bugs": {
     "url": "https://github.com/prowsejeremy/card-carousel-react/issues"
   },

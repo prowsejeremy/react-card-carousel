@@ -29,7 +29,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  padding: 0 2rem;\n  position: relative;\n}\n\n.cardCarouselInner {\n  position: relative;\n}\n\n.carouselItems {\n  transition: all 400ms ease-out;\n  position: relative;\n}\n\n.carouselItemContent {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.carousel-arrow {\n  position: absolute;\n  top: calc(50% - 3rem);\n\n  width: 6rem;\n  height: 6rem;\n  z-index: 10;\n\n  opacity: 1;\n  visibility: visible;\n\n  transition: all 400ms ease-out;\n}\n\n.carousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n\n.prev-button {\n  left: 2rem;\n}\n\n.next-button {\n  right: 2rem;\n}\n\n@media screen and (min-width: 768px) {\n  .cardCarousel {\n    padding: 0 10rem;\n  }\n\n  .prev-button {\n    left: 5rem;\n  }\n  \n  .next-button {\n    right: 5rem;\n  }\n}";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  padding: 0 20px;\n  position: relative; }\n  @media screen and (min-width: 768px) {\n    .cardCarousel {\n      padding: 0 100px; } }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw; }\n  .cardCarousel-item-content:last-child {\n    padding-right: 0; }\n\n.cardCarousel-arrow {\n  cursor: pointer;\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    cursor: pointer;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
 styleInject(css_248z);
 
 const CardCarousel = props => {
@@ -39,10 +39,20 @@ const CardCarousel = props => {
   } = props;
   const defaultSettings = {
     buffer: 50,
-    // Buffer for whether to switch to next slide if it sits right on the border of the viewbox
+    // Buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
+    gap: 20,
+    // gap size between each card/silde (px)
+    touchChangeThreshold: 100,
+    // how far someone has to swipe on a touch device to trigger a change (px)
+    pagination: false,
+    touchControls: true,
+    arrows: true,
+    // enable or disable arrows
     nextArrow: false,
-    prevArrow: false
+    // provide custom markup for the next button
+    prevArrow: false // provide custom markup for the prev button
   };
+
   const config = {
     ...defaultSettings,
     ...settings
@@ -51,8 +61,6 @@ const CardCarousel = props => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [transitionIndex, setTransitionIndex] = React.useState(0);
   const [itemCount, setItemCount] = React.useState(0);
-  let touchStartVal = 0;
-  let touchChangeThreshold = 100;
   const carouselItemsRef = React.useRef();
   const carouselWrapperRef = React.useRef();
   React.useEffect(() => {
@@ -60,7 +68,7 @@ const CardCarousel = props => {
   }, [children.length]);
   React.useEffect(() => {
     getItemsWrapperWidth();
-  }, [carouselItemsRef.current]);
+  }, [carouselItemsRef.current, config]);
   React.useEffect(() => {
     window.addEventListener('resize', getItemsWrapperWidth);
     return () => {
@@ -70,6 +78,8 @@ const CardCarousel = props => {
   React.useEffect(() => {
     handleMove(transitionIndex);
   }, [transitionIndex]);
+
+  // Get the inital wrapper width based on the width of all children with their associated padding values
   const getItemsWrapperWidth = () => {
     const carouselChildren = carouselItemsRef.current.children;
     if (carouselChildren) {
@@ -77,12 +87,16 @@ const CardCarousel = props => {
       [...carouselChildren].map(child => {
         return carouselWidth += child.offsetWidth;
       });
-      setItemsWrapperWidth(`${carouselWidth}px`);
+      setItemsWrapperWidth(carouselWidth);
     }
   };
+
+  // Is the current item in view, checking the left and right borders of an item relative to the viewbox
   const itemInView = (currentItemBox, viewBox) => {
     return currentItemBox.left > viewBox.left - config.buffer && currentItemBox.right < viewBox.right + config.buffer;
   };
+
+  // Get the int value of how far to move
   const getMoveVal = (item, viewBox, dir = 'next') => {
     if (dir == 'next') {
       return (item.offsetLeft - viewBox.width + item.offsetWidth) * -1;
@@ -90,6 +104,8 @@ const CardCarousel = props => {
       return item.offsetLeft * -1;
     }
   };
+
+  // Main movement function that actually updates index and position values
   const handleMove = index => {
     if (currentIndex == index) return;
     const dir = index > currentIndex ? 'next' : 'prev';
@@ -109,18 +125,25 @@ const CardCarousel = props => {
     }
     setCurrentIndex(transitionIndex);
   };
+
+  // Touch Controls
+  let touchStartVal = 0;
   const handleTouchStart = e => {
+    if (!config?.touchControls) return;
     touchStartVal = e.changedTouches[0].clientX;
   };
   const handleTouchEnd = e => {
+    if (!config?.touchControls) return;
     let touchEndVal = e.changedTouches[0].clientX;
     let touchDelta = touchEndVal - touchStartVal;
-    if (touchDelta > touchChangeThreshold) {
+    if (touchDelta > config?.touchChangeThreshold) {
       return handleMoveInteract('prev');
-    } else if (touchDelta * -1 > touchChangeThreshold) {
+    } else if (touchDelta * -1 > config?.touchChangeThreshold) {
       return handleMoveInteract('next');
     }
   };
+
+  // Generic movement function called by next / prev movement interactions.
   const handleMoveInteract = dir => {
     let changedIndex = 0;
     if (dir == 'next') {
@@ -130,36 +153,62 @@ const CardCarousel = props => {
     }
     return setTransitionIndex(changedIndex);
   };
-  return /*#__PURE__*/React.createElement("div", {
+
+  // Generate pagination markup
+  const getPaginationList = () => {
+    const paginationItems = [];
+    for (let index = 0; index <= itemCount; index++) {
+      paginationItems.push( /*#__PURE__*/React.createElement("button", {
+        key: index,
+        onClick: () => {
+          setTransitionIndex(index);
+        },
+        className: "cardCarousel-pagination-button"
+      }));
+    }
+    return /*#__PURE__*/React.createElement("div", {
+      className: "cardCarousel-pagination"
+    }, paginationItems);
+  };
+
+  // Main Carousel markup
+  return !children?.length > 1 ? null : /*#__PURE__*/React.createElement("div", {
     className: `cardCarousel ${itemsWrapperWidth ? 'show' : ''}`,
     onTouchStart: handleTouchStart,
     onTouchEnd: handleTouchEnd
   }, /*#__PURE__*/React.createElement("div", {
-    className: "cardCarouselInner",
+    className: "cardCarousel-inner",
     ref: carouselWrapperRef
   }, /*#__PURE__*/React.createElement("div", {
     ref: carouselItemsRef,
-    className: "carouselItems",
+    className: "cardCarousel-items",
     style: {
-      "width": itemsWrapperWidth ? itemsWrapperWidth : '99999px'
+      "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px'
     }
   }, children?.map((child, key) => {
     return /*#__PURE__*/React.createElement("div", {
-      className: "carouselItemContent",
       key: key,
-      "data-active": key === currentIndex
+      className: "cardCarousel-item-content",
+      "data-active": key === currentIndex,
+      style: {
+        "padding-right": key >= itemCount ? 0 : `${config?.gap}px`
+      }
     }, child);
-  }))), /*#__PURE__*/React.createElement("button", {
-    className: `carousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`,
+  }))), config?.pagination && getPaginationList(), config?.arrows && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    className: `cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`,
     onClick: () => {
       handleMoveInteract('prev');
     }
-  }, config?.nextArrow || 'PREV'), /*#__PURE__*/React.createElement("button", {
-    className: `carousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`,
+  }, config?.nextArrow || /*#__PURE__*/React.createElement("span", {
+    className: "cardCarousel-arrow-inner"
+  })), /*#__PURE__*/React.createElement("button", {
+    className: `cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`,
     onClick: () => {
       handleMoveInteract('next');
     }
-  }, config?.prevArrow || 'NEXT'));
+  }, config?.prevArrow || /*#__PURE__*/React.createElement("span", {
+    className: "cardCarousel-arrow-inner"
+  }))));
 };
 
 module.exports = CardCarousel;

@@ -1,0 +1,123 @@
+.cardCarousel {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+  position: relative;
+
+  @media screen and (min-width: 768px) {
+    padding: 0 100px;
+  }
+}
+
+.cardCarousel-inner {
+  position: relative;
+}
+
+.cardCarousel-items {
+  transition: all 400ms ease-out;
+  position: relative;
+}
+
+.cardCarousel-item-content {
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  max-width: 100vw;
+
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.cardCarousel-arrow {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+  transition: all 400ms ease-out;
+
+  &.disabled {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &:hover {
+    .cardCarousel-arrow-inner {
+      background-color: black;
+      &:before {
+        border-color: white;
+      }
+    }
+  }
+}
+
+.cardCarousel-arrow-inner {
+  display: flex;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: white;
+  position: relative;
+  transition: all 300ms ease-out;
+
+  &:before {
+    content: '';
+    display: block;
+    margin: auto auto auto 20px;
+    width: 12px;
+    height: 12px;
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    transform: rotate(45deg);
+    transition: all 300ms ease-out;
+  }
+}
+
+.prev-button {
+  left: 20px;
+
+  .cardCarousel-arrow-inner {
+    transform: rotate(180deg);
+  }
+
+  @media screen and (min-width: 768px) {
+    left: 50px;
+  }
+}
+
+.next-button {
+  right: 20px;
+
+  @media screen and (min-width: 768px) {
+    right: 50px;
+  }
+}
+
+.cardCarousel-pagination {
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin: 40px auto 0;
+
+  .cardCarousel-pagination-button {
+    display: block;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: transparent;
+    transition: all 300ms ease-out;
+
+    &.active, &:hover {
+      background-color: black;
+    }
+  }
+}

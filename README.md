@@ -63,7 +63,19 @@ Example usage:
 
 ### Optional parameters
 
-- nextArrow / prevArrow
-  - HTML or component to be renered as the next or prev arrow respectively.
-- buffer
+- buffer: int
   - A buffer for the edge of the carousel viewbox. If an item in the carousel overlaps the viewbox by this amount, treat it as visible and skip to show the next item on change.
+- gap: int
+  - Gap size between each card/silde (px)
+- touchChangeThreshold: int
+  - How far someone has to swipe on a touch device to trigger a change (px)
+- pagination: bool
+  - Enable or disable pagination
+- touchControls: bool
+  - Enable or disable touch controls
+- arrows: bool
+  - Enable or disable arrows
+- nextArrow: html
+  - Provide custom markup for the next button
+- prevArrow: html
+  - Provide custom markup for the prev button

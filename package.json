@@ -1,6 +1,6 @@
 {
   "name": "react-card-carousel",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -34,6 +34,7 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
+    "node-sass": "^9.0.0",
     "postcss": "^8.4.31",
     "rollup": "^4.5.0",
     "rollup-plugin-postcss": "^4.0.2"

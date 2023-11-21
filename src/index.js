@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from "react"
 
-import './styles.css'
+import './styles.scss'
 
 const CardCarousel = (props) => {
 
@@ -10,9 +10,14 @@ const CardCarousel = (props) => {
   } = props
 
   const defaultSettings = {
-    buffer: 50, // Buffer for whether to switch to next slide if it sits right on the border of the viewbox
-    nextArrow: false,
-    prevArrow: false
+    buffer: 50, // Buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
+    gap: 20, // gap size between each card/silde (px)
+    touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
+    pagination: false,
+    touchControls: true,
+    arrows: true, // enable or disable arrows
+    nextArrow: false, // provide custom markup for the next button
+    prevArrow: false // provide custom markup for the prev button
   }
 
   const config = {
@@ -25,9 +30,6 @@ const CardCarousel = (props) => {
   const [transitionIndex, setTransitionIndex] = useState(0)
   const [itemCount, setItemCount] = useState(0)
 
-  let touchStartVal = 0
-  let touchChangeThreshold = 100
-
   const carouselItemsRef = useRef()
   const carouselWrapperRef = useRef()
 
@@ -39,7 +41,7 @@ const CardCarousel = (props) => {
 
   useEffect(() => {
     getItemsWrapperWidth()
-  }, [carouselItemsRef.current])
+  }, [carouselItemsRef.current, config])
 
 
   useEffect(() => {
@@ -57,6 +59,7 @@ const CardCarousel = (props) => {
   }, [transitionIndex])
 
 
+  // Get the inital wrapper width based on the width of all children with their associated padding values
   const getItemsWrapperWidth = () => {
     const carouselChildren = carouselItemsRef.current.children
 
@@ -67,16 +70,18 @@ const CardCarousel = (props) => {
         return carouselWidth += child.offsetWidth
       });
 
-      setItemsWrapperWidth(`${carouselWidth}px`)
+      setItemsWrapperWidth(carouselWidth)
     }
   }
 
 
+  // Is the current item in view, checking the left and right borders of an item relative to the viewbox
   const itemInView = (currentItemBox, viewBox) => {
     return (currentItemBox.left > (viewBox.left - config.buffer)) && (currentItemBox.right < (viewBox.right + config.buffer))
   }
 
 
+  // Get the int value of how far to move
   const getMoveVal = (item, viewBox, dir='next') => {
     if (dir == 'next') {
       return (item.offsetLeft - viewBox.width + item.offsetWidth) * -1
@@ -85,7 +90,7 @@ const CardCarousel = (props) => {
     }
   }
 
-
+  // Main movement function that actually updates index and position values
   const handleMove = (index) => {
 
     if (currentIndex == index) return
@@ -113,21 +118,29 @@ const CardCarousel = (props) => {
   }
 
 
+  // Touch Controls
+  let touchStartVal = 0
   const handleTouchStart = (e) => {
+    if (!config?.touchControls) return
+    
     touchStartVal = e.changedTouches[0].clientX
   }
 
   const handleTouchEnd = (e) => {
+    if (!config?.touchControls) return
+    
     let touchEndVal = e.changedTouches[0].clientX
     let touchDelta = touchEndVal-touchStartVal
 
-    if (touchDelta > touchChangeThreshold) {
+    if (touchDelta > config?.touchChangeThreshold) {
       return handleMoveInteract('prev')
-    } else if (touchDelta * -1 > touchChangeThreshold) {
+    } else if (touchDelta * -1 > config?.touchChangeThreshold) {
       return handleMoveInteract('next')
     }
   }
 
+
+  // Generic movement function called by next / prev movement interactions.
   const handleMoveInteract = (dir) => {
     let changedIndex = 0
 
@@ -141,19 +154,45 @@ const CardCarousel = (props) => {
   }
 
 
-  return (
+  // Generate pagination markup
+  const getPaginationList = () => {
+    const paginationItems = []
+
+    for (let index = 0; index <= itemCount; index++) {
+      paginationItems.push(
+        <button
+          key={index} 
+          onClick={() => {setTransitionIndex(index)}}
+          className="cardCarousel-pagination-button" /> 
+      )
+    }
+
+    return (
+      <div className="cardCarousel-pagination">
+        {paginationItems}
+      </div>
+    )
+  }
+
+
+  // Main Carousel markup
+  return !children?.length > 1 ? null : (
     <div
       className={`cardCarousel ${itemsWrapperWidth ? 'show' : ''}`}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}>
-      <div className="cardCarouselInner" ref={carouselWrapperRef}>
+      onTouchStart={ handleTouchStart }
+      onTouchEnd={ handleTouchEnd }>
+      <div className="cardCarousel-inner" ref={carouselWrapperRef}>
         <div
           ref={carouselItemsRef}
-          className="carouselItems"
-          style={{"width": itemsWrapperWidth ? itemsWrapperWidth : '99999px'}}>
+          className="cardCarousel-items"
+          style={{ "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px' }}>
           { children?.map((child, key) => {
             return (
-              <div className="carouselItemContent" key={key} data-active={key === currentIndex}>
+              <div
+                key={key}
+                className="cardCarousel-item-content"
+                data-active={key === currentIndex}
+                style={{"padding-right": key >= itemCount ? 0 : `${config?.gap}px`}}>
                 {child}
               </div>
             )
@@ -161,17 +200,23 @@ const CardCarousel = (props) => {
         </div>
       </div>
 
-      <button
-        className={`carousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`}
-        onClick={() => {handleMoveInteract('prev')}}>
-        {config?.nextArrow || 'PREV'}
-      </button>
+      { config?.pagination && getPaginationList() }
 
-      <button
-        className={`carousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`}
-        onClick={() => {handleMoveInteract('next')}}>
-        {config?.prevArrow || 'NEXT'}
-      </button>
+      { config?.arrows &&
+        <>
+          <button
+            className={`cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`}
+            onClick={() => {handleMoveInteract('prev')}}>
+            {config?.nextArrow || <span className="cardCarousel-arrow-inner" />}
+          </button>
+
+          <button
+            className={`cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`}
+            onClick={() => {handleMoveInteract('next')}}>
+            {config?.prevArrow || <span className="cardCarousel-arrow-inner" />}
+          </button>
+        </>
+      }
 
     </div>
   )

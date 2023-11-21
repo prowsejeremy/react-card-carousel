@@ -33,7 +33,7 @@ const MyComponent = () => {
     pagination: true,
     arrows: false,
     touchControls: true,
-      beforeChange: (currentIndex, newIndex) => {
+    beforeChange: (currentIndex, newIndex) => {
       console.log('Before Change', currentIndex, newIndex)
     },
     afterChange: (newIndex) => {

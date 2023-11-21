@@ -9,11 +9,11 @@ A basic card carousel for react, usable with items of either fixed or varying wi
 Instal the package via npm or yarn:
 
 ```
-npm i -s card-carousel-react
+npm i -s @jpd.nz/react-card-carousel
 ```
 
 ```
-yarn add card-carousel-react
+yarn add @jpd.nz/react-card-carousel
 ```
 
 
@@ -23,7 +23,7 @@ Example usage:
 
 ```
 import { useRef } from 'react'
-import CardCarousel from 'card-carousel-react'
+import CardCarousel from 'react-card-carousel'
 
 const MyComponent = () => {
 

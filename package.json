@@ -1,5 +1,5 @@
 {
-  "name": "card-carousel-react",
+  "name": "react-card-carousel",
   "version": "0.0.4",
   "description": "",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prowsejeremy/card-carousel-react.git"
+    "url": "git+https://github.com/prowsejeremy/react-card-carousel.git"
   },
   "keywords": [
     "react",
@@ -26,9 +26,9 @@
     "README.md"
   ],
   "bugs": {
-    "url": "https://github.com/prowsejeremy/card-carousel-react/issues"
+    "url": "https://github.com/prowsejeremy/react-card-carousel/issues"
   },
-  "homepage": "https://github.com/prowsejeremy/card-carousel-react#readme",
+  "homepage": "https://github.com/prowsejeremy/react-card-carousel#readme",
   "dependencies": {
     "react": "^18.2.0"
   },

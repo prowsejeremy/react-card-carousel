@@ -4,6 +4,16 @@
   padding: 0 20px;
   position: relative;
 
+  // Reset for buttons
+  .cardCarousel-arrow,
+  .cardCarousel-pagination-button {
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: none;
+  }
+
   @media screen and (min-width: 768px) {
     padding: 0 100px;
   }
@@ -31,7 +41,6 @@
 }
 
 .cardCarousel-arrow {
-  cursor: pointer;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -108,7 +117,6 @@
 
   .cardCarousel-pagination-button {
     display: block;
-    cursor: pointer;
     width: 10px;
     height: 10px;
     border-radius: 5px;

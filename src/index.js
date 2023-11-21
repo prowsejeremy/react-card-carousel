@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useRef} from "react"
+import React, {forwardRef, useState, useEffect, useRef, useImperativeHandle} from "react"
 
 import './styles.scss'
 
-const CardCarousel = (props) => {
+const CardCarousel = forwardRef((props, ref) => {
 
   const {
     children,
@@ -17,7 +17,11 @@ const CardCarousel = (props) => {
     touchControls: true,
     arrows: true, // enable or disable arrows
     nextArrow: false, // provide custom markup for the next button
-    prevArrow: false // provide custom markup for the prev button
+    prevArrow: false, // provide custom markup for the prev button
+    
+    // Event hooks
+    beforeChange: false,
+    afterChange: false
   }
 
   const config = {
@@ -25,7 +29,7 @@ const CardCarousel = (props) => {
     ...settings
   }
 
-  const [itemsWrapperWidth, setItemsWrapperWidth] = useState(null)
+  const [itemsWrapperWidth, setItemsWrapperWidth] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [transitionIndex, setTransitionIndex] = useState(0)
   const [itemCount, setItemCount] = useState(0)
@@ -110,11 +114,18 @@ const CardCarousel = (props) => {
         return setTransitionIndex(transitionIndex-1)
       }
     } else {
+      
+      // trigger beforeChange listener
+      config?.beforeChange && config?.beforeChange(currentIndex, transitionIndex)
+
       const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir)
       carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`
     }
 
     setCurrentIndex(transitionIndex)
+    
+    // trigger afterChange listener
+    config?.afterChange && config?.afterChange(transitionIndex)
   }
 
 
@@ -154,6 +165,20 @@ const CardCarousel = (props) => {
   }
 
 
+  // Interaction functions
+  const nextCard = () => handleMoveInteract('next')
+  const prevCard = () => handleMoveInteract('prev')
+  const goToCard = (index) => setTransitionIndex(index)
+
+
+  // Pass functions to external
+  useImperativeHandle(ref, () => ({
+    nextCard,
+    prevCard,
+    goToCard: (index) => goToCard(index)
+  }));
+
+
   // Generate pagination markup
   const getPaginationList = () => {
     const paginationItems = []
@@ -162,7 +187,7 @@ const CardCarousel = (props) => {
       paginationItems.push(
         <button
           key={index} 
-          onClick={() => {setTransitionIndex(index)}}
+          onClick={() => goToCard(index)}
           className="cardCarousel-pagination-button" /> 
       )
     }
@@ -192,7 +217,7 @@ const CardCarousel = (props) => {
                 key={key}
                 className="cardCarousel-item-content"
                 data-active={key === currentIndex}
-                style={{"padding-right": key >= itemCount ? 0 : `${config?.gap}px`}}>
+                style={{"paddingRight": key >= itemCount ? 0 : `${config?.gap}px`}}>
                 {child}
               </div>
             )
@@ -206,13 +231,13 @@ const CardCarousel = (props) => {
         <>
           <button
             className={`cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`}
-            onClick={() => {handleMoveInteract('prev')}}>
+            onClick={ prevCard }>
             {config?.nextArrow || <span className="cardCarousel-arrow-inner" />}
           </button>
 
           <button
             className={`cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`}
-            onClick={() => {handleMoveInteract('next')}}>
+            onClick={ nextCard }>
             {config?.prevArrow || <span className="cardCarousel-arrow-inner" />}
           </button>
         </>
@@ -220,6 +245,6 @@ const CardCarousel = (props) => {
 
     </div>
   )
-}
+})
 
 export default CardCarousel

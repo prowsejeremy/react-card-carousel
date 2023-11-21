@@ -29,10 +29,10 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  padding: 0 20px;\n  position: relative; }\n  @media screen and (min-width: 768px) {\n    .cardCarousel {\n      padding: 0 100px; } }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw; }\n  .cardCarousel-item-content:last-child {\n    padding-right: 0; }\n\n.cardCarousel-arrow {\n  cursor: pointer;\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    cursor: pointer;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  padding: 0 20px;\n  position: relative; }\n  .cardCarousel .cardCarousel-arrow,\n  .cardCarousel .cardCarousel-pagination-button {\n    cursor: pointer;\n    padding: 0;\n    border: none;\n    outline: none;\n    background: none; }\n  @media screen and (min-width: 768px) {\n    .cardCarousel {\n      padding: 0 100px; } }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw; }\n  .cardCarousel-item-content:last-child {\n    padding-right: 0; }\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
 styleInject(css_248z);
 
-const CardCarousel = props => {
+const CardCarousel = /*#__PURE__*/React.forwardRef((props, ref) => {
   const {
     children,
     settings
@@ -50,14 +50,18 @@ const CardCarousel = props => {
     // enable or disable arrows
     nextArrow: false,
     // provide custom markup for the next button
-    prevArrow: false // provide custom markup for the prev button
-  };
+    prevArrow: false,
+    // provide custom markup for the prev button
 
+    // Event hooks
+    beforeChange: false,
+    afterChange: false
+  };
   const config = {
     ...defaultSettings,
     ...settings
   };
-  const [itemsWrapperWidth, setItemsWrapperWidth] = React.useState(null);
+  const [itemsWrapperWidth, setItemsWrapperWidth] = React.useState(false);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [transitionIndex, setTransitionIndex] = React.useState(0);
   const [itemCount, setItemCount] = React.useState(0);
@@ -120,10 +124,15 @@ const CardCarousel = props => {
         return setTransitionIndex(transitionIndex - 1);
       }
     } else {
+      // trigger beforeChange listener
+      config?.beforeChange && config?.beforeChange(currentIndex, transitionIndex);
       const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir);
       carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`;
     }
     setCurrentIndex(transitionIndex);
+
+    // trigger afterChange listener
+    config?.afterChange && config?.afterChange(transitionIndex);
   };
 
   // Touch Controls
@@ -154,15 +163,25 @@ const CardCarousel = props => {
     return setTransitionIndex(changedIndex);
   };
 
+  // Interaction functions
+  const nextCard = () => handleMoveInteract('next');
+  const prevCard = () => handleMoveInteract('prev');
+  const goToCard = index => setTransitionIndex(index);
+
+  // Pass functions to external
+  React.useImperativeHandle(ref, () => ({
+    nextCard,
+    prevCard,
+    goToCard: index => goToCard(index)
+  }));
+
   // Generate pagination markup
   const getPaginationList = () => {
     const paginationItems = [];
     for (let index = 0; index <= itemCount; index++) {
       paginationItems.push( /*#__PURE__*/React.createElement("button", {
         key: index,
-        onClick: () => {
-          setTransitionIndex(index);
-        },
+        onClick: () => goToCard(index),
         className: "cardCarousel-pagination-button"
       }));
     }
@@ -191,24 +210,20 @@ const CardCarousel = props => {
       className: "cardCarousel-item-content",
       "data-active": key === currentIndex,
       style: {
-        "padding-right": key >= itemCount ? 0 : `${config?.gap}px`
+        "paddingRight": key >= itemCount ? 0 : `${config?.gap}px`
       }
     }, child);
   }))), config?.pagination && getPaginationList(), config?.arrows && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     className: `cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`,
-    onClick: () => {
-      handleMoveInteract('prev');
-    }
+    onClick: prevCard
   }, config?.nextArrow || /*#__PURE__*/React.createElement("span", {
     className: "cardCarousel-arrow-inner"
   })), /*#__PURE__*/React.createElement("button", {
     className: `cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`,
-    onClick: () => {
-      handleMoveInteract('next');
-    }
+    onClick: nextCard
   }, config?.prevArrow || /*#__PURE__*/React.createElement("span", {
     className: "cardCarousel-arrow-inner"
   }))));
-};
+});
 
 module.exports = CardCarousel;

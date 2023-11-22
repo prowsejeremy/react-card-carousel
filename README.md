@@ -1,7 +1,7 @@
 # React Card Carousel
 ### @jpd.nz/react-card-carousel
 
-A basic card carousel for react, usable with items of either fixed or varying widths.
+A basic card carousel for react, usable with items of either fixed or variable widths. The dimentions for each carousel item should be set by it's contents. This component serves to simply add carousel functionality and does not impose any default sizes.
 
 
 ### Install

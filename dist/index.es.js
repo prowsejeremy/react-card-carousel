@@ -27,7 +27,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  padding: 0 20px;\n  position: relative; }\n  .cardCarousel .cardCarousel-arrow,\n  .cardCarousel .cardCarousel-pagination-button {\n    cursor: pointer;\n    padding: 0;\n    border: none;\n    outline: none;\n    background: none; }\n  @media screen and (min-width: 768px) {\n    .cardCarousel {\n      padding: 0 100px; } }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  vertical-align: middle;\n  overflow: hidden;\n  max-width: 100vw; }\n  .cardCarousel-item-content:last-child {\n    padding-right: 0; }\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  padding: 0 20px;\n  position: relative; }\n  .cardCarousel .cardCarousel-arrow,\n  .cardCarousel .cardCarousel-pagination-button {\n    cursor: pointer;\n    padding: 0;\n    border: none;\n    outline: none;\n    background: none; }\n  @media screen and (min-width: 768px) {\n    .cardCarousel {\n      padding: 0 100px; } }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw; }\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
 styleInject(css_248z);
 
 const CardCarousel = /*#__PURE__*/forwardRef((props, ref) => {
@@ -37,7 +37,7 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, ref) => {
   } = props;
   const defaultSettings = {
     buffer: 50,
-    // Buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
+    // buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
     gap: 20,
     // gap size between each card/silde (px)
     touchChangeThreshold: 100,
@@ -53,8 +53,10 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, ref) => {
 
     // Event hooks
     beforeChange: false,
-    afterChange: false
+    // fires just before change
+    afterChange: false // fires just after change
   };
+
   const config = {
     ...defaultSettings,
     ...settings
@@ -84,12 +86,13 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, ref) => {
   // Get the inital wrapper width based on the width of all children with their associated padding values
   const getItemsWrapperWidth = () => {
     const carouselChildren = carouselItemsRef.current.children;
+    const paddingWidth = config?.gap * itemCount;
     if (carouselChildren) {
       let carouselWidth = 0;
       [...carouselChildren].map(child => {
         return carouselWidth += child.offsetWidth;
       });
-      setItemsWrapperWidth(carouselWidth);
+      setItemsWrapperWidth(carouselWidth + paddingWidth);
     }
   };
 
@@ -203,16 +206,14 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, ref) => {
     ref: carouselItemsRef,
     className: "cardCarousel-items",
     style: {
-      "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px'
+      "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px',
+      "gap": `${config?.gap}px`
     }
   }, children?.map((child, key) => {
     return /*#__PURE__*/React.createElement("div", {
       key: key,
       className: "cardCarousel-item-content",
-      "data-active": key === currentIndex,
-      style: {
-        "paddingRight": key >= itemCount ? 0 : `${config?.gap}px`
-      }
+      "data-active": key === currentIndex
     }, child);
   }))), config?.pagination && getPaginationList(), config?.arrows && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     className: `cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`,

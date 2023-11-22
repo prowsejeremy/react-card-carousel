@@ -1,5 +1,5 @@
 # React Card Carousel
-### card-carousel-react
+### @jpd.nz/react-card-carousel
 
 A basic card carousel for react, usable with items of either fixed or varying widths.
 

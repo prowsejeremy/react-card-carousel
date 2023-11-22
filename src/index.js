@@ -10,7 +10,7 @@ const CardCarousel = forwardRef((props, ref) => {
   } = props
 
   const defaultSettings = {
-    buffer: 50, // Buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
+    buffer: 50, // buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
     gap: 20, // gap size between each card/silde (px)
     touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
     pagination: false,
@@ -20,8 +20,8 @@ const CardCarousel = forwardRef((props, ref) => {
     prevArrow: false, // provide custom markup for the prev button
     
     // Event hooks
-    beforeChange: false,
-    afterChange: false
+    beforeChange: false, // fires just before change
+    afterChange: false // fires just after change
   }
 
   const config = {
@@ -66,6 +66,7 @@ const CardCarousel = forwardRef((props, ref) => {
   // Get the inital wrapper width based on the width of all children with their associated padding values
   const getItemsWrapperWidth = () => {
     const carouselChildren = carouselItemsRef.current.children
+    const paddingWidth = config?.gap * itemCount;
 
     if (carouselChildren) {
       let carouselWidth = 0;
@@ -74,7 +75,7 @@ const CardCarousel = forwardRef((props, ref) => {
         return carouselWidth += child.offsetWidth
       });
 
-      setItemsWrapperWidth(carouselWidth)
+      setItemsWrapperWidth(carouselWidth + paddingWidth)
     }
   }
 
@@ -93,6 +94,7 @@ const CardCarousel = forwardRef((props, ref) => {
       return item.offsetLeft * -1
     }
   }
+
 
   // Main movement function that actually updates index and position values
   const handleMove = (index) => {
@@ -211,14 +213,13 @@ const CardCarousel = forwardRef((props, ref) => {
         <div
           ref={carouselItemsRef}
           className="cardCarousel-items"
-          style={{ "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px' }}>
+          style={{ "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px', "gap": `${config?.gap}px` }}>
           { children?.map((child, key) => {
             return (
               <div
                 key={key}
                 className="cardCarousel-item-content"
-                data-active={key === currentIndex}
-                style={{"paddingRight": key >= itemCount ? 0 : `${config?.gap}px`}}>
+                data-active={key === currentIndex}>
                 {child}
               </div>
             )

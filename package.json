@@ -1,6 +1,6 @@
 {
   "name": "@jpd.nz/react-card-carousel",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -23,7 +23,8 @@
   "license": "MIT",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "package.json"
   ],
   "bugs": {
     "url": "https://github.com/prowsejeremy/react-card-carousel/issues"

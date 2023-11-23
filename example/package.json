@@ -9,7 +9,7 @@
     "sass": "^1.69.5"
   },
   "scripts": {
-    "start": "cp -r ../src/* src/__CardCarousel/ && react-scripts start"
+    "start": "mkdir -p src/__CardCarousel && cp -r ../src/* src/__CardCarousel/ && react-scripts start"
   },
   "eslintConfig": {
     "extends": [

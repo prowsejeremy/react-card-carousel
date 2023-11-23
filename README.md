@@ -5,24 +5,23 @@ A basic card carousel for react, usable with items of either fixed or variable w
 
 To play around with the example code, head over to the [github repo](https://github.com/prowsejeremy/react-card-carousel) and download the source. Change (cd) into the `example/` directory, run `npm install` then `npm run start`. Open `/example/src/__example.js` to modify the carousel settings.
 
+
 ### Install
 
 Instal the package via npm or yarn:
 
-```
+~~~terminal
 npm i -s @jpd.nz/react-card-carousel
-```
+~~~
 
-```
+~~~terminal
 yarn add @jpd.nz/react-card-carousel
-```
+~~~
 
 
 ### Usage
 
-Example usage:
-
-```
+~~~jsx
 import { useRef } from 'react'
 import CardCarousel from '@jpd.nz/react-card-carousel'
 
@@ -85,7 +84,7 @@ const MyComponent = () => {
 }
 
 export default MyComponent
-```
+~~~
 
 
 ### Optional settings

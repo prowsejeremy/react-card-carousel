@@ -92,14 +92,19 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, carouselRef) => {
     settings
   } = props;
   const defaultSettings = {
+    // Presentation settings
     buffer: 50,
     // buffer for whether to switch to next card if it sits right on the border of the viewbox (px)
     gap: 20,
     // gap size between each card/silde (px)
     padding: 50,
     // padding either side of the viewbox.
+    slidesToShow: 0,
+    // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
     transitionSpeed: 300,
     // speed for transitions (ms)
+
+    // Control settings
     touchChangeThreshold: 100,
     // how far someone has to swipe on a touch device to trigger a change (px)
     pagination: false,
@@ -110,10 +115,6 @@ const CardCarousel = /*#__PURE__*/forwardRef((props, carouselRef) => {
     // provide custom markup for the next button
     prevArrow: false,
     // provide custom markup for the prev button
-    centerMode: false,
-    // coming soon.
-    slidesToShow: 0,
-    // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
 
     // Event hooks
     beforeChange: false,

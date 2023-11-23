@@ -1,8 +1,9 @@
 # React Card Carousel
 ### @jpd.nz/react-card-carousel
 
-A basic card carousel for react, usable with items of either fixed or variable widths. The dimentions for each carousel item should be set by it's contents. This component serves to simply add carousel functionality and does not impose any default sizes.
+A basic card carousel for react, usable with items of either fixed or variable widths.
 
+To play around with the example code change, head over to the [github repo](https://github.com/prowsejeremy/react-card-carousel) and download the source. (cd) into the `example/` directory, run `npm install` and then `npm run start`. Open `/example/__example.js` to modify the carousel settings.
 
 ### Install
 
@@ -31,8 +32,9 @@ const MyComponent = () => {
 
   const settings = {
     pagination: true,
-    arrows: false,
+    arrows: true,
     touchControls: true,
+    buffer: 100,
     beforeChange: (currentIndex, newIndex) => {
       console.log('Before Change', currentIndex, newIndex)
     },
@@ -63,7 +65,7 @@ const MyComponent = () => {
     <div className='my-component'>
 
       {/* Optionally you can define your own completely custom buttons */}
-      <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button>
+      {/* <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button> */}
       <button onClick={ () => myCarouselRef?.current?.nextCard() }>Next</button>
 
       <CardCarousel ref={myCarouselRef} settings={settings}>
@@ -88,37 +90,42 @@ export default MyComponent
 
 ### Optional settings
 
-- buffer: int
-  - A buffer for the edge of the carousel viewbox. If an item in the carousel overlaps the viewbox by this amount, treat it as visible and skip to show the next item on change.
-- gap: int
-  - Gap size between each card/silde (px)
-- touchChangeThreshold: int
-  - How far someone has to swipe on a touch device to trigger a change (px)
-- pagination: bool
-  - Enable or disable pagination
-- touchControls: bool
-  - Enable or disable touch controls
-- arrows: bool
-  - Enable or disable arrows
-- nextArrow: html
-  - Provide custom markup for the next button
-- prevArrow: html
-  - Provide custom markup for the prev button
+#### Presentation settings
+
+| Property | Type | Unit | Default | Description                           |
+| -------- | ---- | ---- | ------- | ------------------------------------- |
+| gap | int | px | 20 | Gap size between each card/silde |
+| padding | int | px | 50 | Padding value either side of the main slider |
+| slidesToShow | int | n/a | 0 | Number of slides to display in one view. Set to 0 to inherit widths from card contents and support variable widths |
+| transitionSpeed | int | ms | 300 | Speed of the carousel move transition |
+
+
+#### Control settings
+
+| Property | Type | Unit | Default | Description                           |
+| -------- | ---- | ---- | ------- | ------------------------------------- |
+| buffer | int | px | 50 | A buffer for the edge of the carousel viewbox. If an item in the carousel overlaps the viewbox by this amount, treat it as visible and skip to show the next item on change |
+| touchChangeThreshold | int | px | 100 | How far someone has to swipe on a touch device to trigger a change |
+| pagination | bool | n/a | false | Enable or disable pagination |
+| touchControls | bool | n/a | true | Enable or disable touch controls |
+| arrows | bool | n/a | true | Enable or disable arrows |
+| nextArrow | html | n/a | false | Provide custom markup for the next button |
+| prevArrow | html | n/a | false | Provide custom markup for the prev button |
 
 
 ### Event Hooks
 
-- beforeChange: func
-  - Fires just before the change takes place, returns the currentIndex and the newIndex
-- afterChange: func
-  - Fires immediately after the change takes place, returns the newIndex
+| Name | Description |
+| ---- | ----------- |
+| beforeChange | Fires just before the change takes place, returns the currentIndex and the newIndex |
+| afterChange | Fires immediately after the change takes place, returns the newIndex |
 
 
 ### Functions
 
-- nextCard()
-  - Trigger change to the next card
-- prevCard()
-  - Trigger change to the prev card
-- goToCard(index)
-  - Trigger change to a specific card (must provide an index)
+| Name | Description |
+| ---- | ----------- |
+| nextCard() | Change to the next card |
+| prevCard() | Change to the previous card |
+| goToCard(index) | Change to a specific card, ignored if card is currently in view (must provide an index) |
+| getCurrentIndex() | Retrieve the current index the carousel is at |

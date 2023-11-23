@@ -1,8 +1,16 @@
-import React, {forwardRef, useState, useEffect, useRef, useImperativeHandle} from "react"
+import React, {forwardRef, useState, useEffect, useRef, useImperativeHandle} from 'react'
+
+import ArrowButtons from './components/arrowButtons'
+import Pagination from './components/pagination'
+
+import {
+  itemInView,
+  getMoveVal
+} from './helpers'
 
 import './styles.scss'
 
-const CardCarousel = forwardRef((props, ref) => {
+const CardCarousel = forwardRef((props, carouselRef) => {
 
   const {
     children,
@@ -10,8 +18,14 @@ const CardCarousel = forwardRef((props, ref) => {
   } = props
 
   const defaultSettings = {
-    buffer: 50, // buffer for whether to switch to next slide if it sits right on the border of the viewbox (px)
+    // Presentation settings
+    buffer: 50, // buffer for whether to switch to next card if it sits right on the border of the viewbox (px)
     gap: 20, // gap size between each card/silde (px)
+    padding: 50, // padding either side of the viewbox.
+    slidesToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
+    transitionSpeed: 300, // speed for transitions (ms)
+    
+    // Control settings
     touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
     pagination: false,
     touchControls: true,
@@ -24,77 +38,91 @@ const CardCarousel = forwardRef((props, ref) => {
     afterChange: false // fires just after change
   }
 
-  const config = {
+  const [config, setConfig] = useState({
     ...defaultSettings,
     ...settings
-  }
+  })
 
+  const [itemWidth, setItemWidth] = useState(false)
   const [itemsWrapperWidth, setItemsWrapperWidth] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [transitionIndex, setTransitionIndex] = useState(0)
-  const [itemCount, setItemCount] = useState(0)
+  const [itemCount, setItemCount] = useState(children.length-1)
 
   const carouselItemsRef = useRef()
   const carouselWrapperRef = useRef()
 
 
   useEffect(() => {
-    setItemCount(children.length-1)
-  }, [children.length])
+    setConfig({
+      ...defaultSettings,
+      ...settings
+    })
+  }, [settings])
 
 
+  // Set inital width for the carousel items
   useEffect(() => {
     getItemsWrapperWidth()
-  }, [carouselItemsRef.current, config])
+  }, [carouselItemsRef.current, itemWidth, config])
 
 
+  // Set inital width for each card, if applicable
   useEffect(() => {
-    window.addEventListener('resize', getItemsWrapperWidth)
+    getItemWidth()
+  }, [carouselWrapperRef.current, config])
+
+
+  // Add window resize listener
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener('resize', getItemsWrapperWidth)
+      window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined])
+  }, [typeof window !== undefined, itemWidth])
+
+  
+  // Handle resize of browser window
+  const handleResize = () => {
+    getItemWidth()
+    getItemsWrapperWidth(true)
+  }
 
 
+  // Trigger move logic when the transition index changes
   useEffect(() => {
     handleMove(transitionIndex)
   }, [transitionIndex])
 
 
+  // If slidesToShow has been set, calculate the width of each item based on the viewBox size.
+  const getItemWidth = () => {
+    if (config.slidesToShow !== 0) {
+      const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
+      setItemWidth(carouselWrapperBox.width/config.slidesToShow)
+    }
+  }
+
   // Get the inital wrapper width based on the width of all children with their associated padding values
-  const getItemsWrapperWidth = () => {
+  const getItemsWrapperWidth = (onResize=false) => {
+    if (onResize && config.slidesToShow === 0) return
+
     const carouselChildren = carouselItemsRef.current.children
-    const paddingWidth = config?.gap * itemCount;
+    const paddingWidth = config.gap * itemCount;
 
     if (carouselChildren) {
       let carouselWidth = 0;
 
       [...carouselChildren].map((child) => {
-        return carouselWidth += child.offsetWidth
+        const childBox = child.getBoundingClientRect()
+        return carouselWidth += itemWidth || childBox.width
       });
 
       setItemsWrapperWidth(carouselWidth + paddingWidth)
     }
   }
-
-
-  // Is the current item in view, checking the left and right borders of an item relative to the viewbox
-  const itemInView = (currentItemBox, viewBox) => {
-    return (currentItemBox.left > (viewBox.left - config.buffer)) && (currentItemBox.right < (viewBox.right + config.buffer))
-  }
-
-
-  // Get the int value of how far to move
-  const getMoveVal = (item, viewBox, dir='next') => {
-    if (dir == 'next') {
-      return (item.offsetLeft - viewBox.width + item.offsetWidth) * -1
-    } else {
-      return item.offsetLeft * -1
-    }
-  }
-
 
   // Main movement function that actually updates index and position values
   const handleMove = (index) => {
@@ -109,7 +137,7 @@ const CardCarousel = forwardRef((props, ref) => {
     const currentItemBox = currentItem.getBoundingClientRect()
     const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
 
-    if (itemInView(currentItemBox, carouselWrapperBox)) {
+    if (itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
       if (dir == 'next') {
         return setTransitionIndex(transitionIndex+1)
       } else {
@@ -118,7 +146,7 @@ const CardCarousel = forwardRef((props, ref) => {
     } else {
       
       // trigger beforeChange listener
-      config?.beforeChange && config?.beforeChange(currentIndex, transitionIndex)
+      config.beforeChange && config.beforeChange(currentIndex, transitionIndex)
 
       const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir)
       carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`
@@ -127,27 +155,28 @@ const CardCarousel = forwardRef((props, ref) => {
     setCurrentIndex(transitionIndex)
     
     // trigger afterChange listener
-    config?.afterChange && config?.afterChange(transitionIndex)
+    config.afterChange && config.afterChange(transitionIndex)
   }
 
 
   // Touch Controls
   let touchStartVal = 0
   const handleTouchStart = (e) => {
-    if (!config?.touchControls) return
+    if (!config.touchControls) return
     
     touchStartVal = e.changedTouches[0].clientX
   }
 
+
   const handleTouchEnd = (e) => {
-    if (!config?.touchControls) return
+    if (!config.touchControls) return
     
     let touchEndVal = e.changedTouches[0].clientX
     let touchDelta = touchEndVal-touchStartVal
 
-    if (touchDelta > config?.touchChangeThreshold) {
+    if (touchDelta > config.touchChangeThreshold) {
       return handleMoveInteract('prev')
-    } else if (touchDelta * -1 > config?.touchChangeThreshold) {
+    } else if (touchDelta * -1 > config.touchChangeThreshold) {
       return handleMoveInteract('next')
     }
   }
@@ -170,11 +199,18 @@ const CardCarousel = forwardRef((props, ref) => {
   // Interaction functions
   const nextCard = () => handleMoveInteract('next')
   const prevCard = () => handleMoveInteract('prev')
-  const goToCard = (index) => setTransitionIndex(index)
+  const goToCard = (index) => {
+    const currentItem = carouselItemsRef.current.children[index]
+    const currentItemBox = currentItem.getBoundingClientRect()
+    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
+    if (!itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
+      setTransitionIndex(index)
+    }
+  }
 
 
   // Pass functions to external
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(carouselRef, () => ({
     nextCard,
     prevCard,
     goToCard: (index) => goToCard(index),
@@ -182,44 +218,29 @@ const CardCarousel = forwardRef((props, ref) => {
   }));
 
 
-  // Generate pagination markup
-  const getPaginationList = () => {
-    const paginationItems = []
-
-    for (let index = 0; index <= itemCount; index++) {
-      paginationItems.push(
-        <button
-          key={index} 
-          onClick={() => goToCard(index)}
-          className="cardCarousel-pagination-button" /> 
-      )
-    }
-
-    return (
-      <div className="cardCarousel-pagination">
-        {paginationItems}
-      </div>
-    )
-  }
-
-
   // Main Carousel markup
   return !children?.length > 1 ? null : (
     <div
       className={`cardCarousel ${itemsWrapperWidth ? 'show' : ''}`}
       onTouchStart={ handleTouchStart }
-      onTouchEnd={ handleTouchEnd }>
+      onTouchEnd={ handleTouchEnd }
+      style={{ "padding": `0 ${config.padding}px` }}>
       <div className="cardCarousel-inner" ref={carouselWrapperRef}>
         <div
           ref={carouselItemsRef}
           className="cardCarousel-items"
-          style={{ "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px', "gap": `${config?.gap}px` }}>
+          style={{
+            "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px',
+            "gap": `${config.gap}px`,
+            "transitionDuration": `${config.transitionSpeed}ms`
+          }}>
           { children?.map((child, key) => {
             return (
               <div
                 key={key}
                 className="cardCarousel-item-content"
-                data-active={key === currentIndex}>
+                data-active={key === currentIndex}
+                style={itemWidth ? {"width": `${itemWidth}px`} : {}}>
                 {child}
               </div>
             )
@@ -227,22 +248,22 @@ const CardCarousel = forwardRef((props, ref) => {
         </div>
       </div>
 
-      { config?.pagination && getPaginationList() }
+      { config.pagination &&
+        <Pagination
+          itemCount={itemCount}
+          goToCard={goToCard}
+        />
+      }
 
-      { config?.arrows &&
-        <>
-          <button
-            className={`cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`}
-            onClick={ prevCard }>
-            {config?.nextArrow || <span className="cardCarousel-arrow-inner" />}
-          </button>
-
-          <button
-            className={`cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`}
-            onClick={ nextCard }>
-            {config?.prevArrow || <span className="cardCarousel-arrow-inner" />}
-          </button>
-        </>
+      { config.arrows &&
+        <ArrowButtons
+          nextArrow={config.nextArrow}
+          prevArrow={config.prevArrow}
+          currentIndex={currentIndex}
+          prevCard={prevCard}
+          itemCount={itemCount}
+          nextCard={nextCard}
+        />
       }
 
     </div>

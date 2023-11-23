@@ -3,7 +3,7 @@
 
 A basic card carousel for react, usable with items of either fixed or variable widths.
 
-To play around with the example code change, head over to the [github repo](https://github.com/prowsejeremy/react-card-carousel) and download the source. (cd) into the `example/` directory, run `npm install` and then `npm run start`. Open `/example/__example.js` to modify the carousel settings.
+To play around with the example code, head over to the [github repo](https://github.com/prowsejeremy/react-card-carousel) and download the source. Change (cd) into the `example/` directory, run `npm install` then `npm run start`. Open `/example/src/__example.js` to modify the carousel settings.
 
 ### Install
 

@@ -1,11 +1,13 @@
-const ArrowButtons = (props) => {
+import { ArrowPropsInterface } from "../types.ts"
+
+const ArrowButtons = (props:ArrowPropsInterface) => {
 
   const {
     nextArrow,
     prevArrow,
     currentIndex,
-    prevCard,
     itemCount,
+    prevCard,
     nextCard
   } = props
 
@@ -14,13 +16,17 @@ const ArrowButtons = (props) => {
       <button
         className={`cardCarousel-arrow prev-button ${currentIndex == 0 ? 'disabled' : 'active'}`}
         onClick={ prevCard }>
-        {nextArrow || <span className="cardCarousel-arrow-inner" />}
+        <>
+          {nextArrow || <span className="cardCarousel-arrow-inner" />}
+        </>
       </button>
 
       <button
         className={`cardCarousel-arrow next-button ${currentIndex == itemCount ? 'disabled' : 'active'}`}
         onClick={ nextCard }>
-        {prevArrow || <span className="cardCarousel-arrow-inner" />}
+        <>
+          {prevArrow || <span className="cardCarousel-arrow-inner" />}
+        </>
       </button>
     </>
   )

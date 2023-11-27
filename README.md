@@ -11,11 +11,11 @@ To play around with the example code, head over to the [github repo](https://git
 Instal the package via npm or yarn:
 
 ~~~terminal
-npm i -s @jpd.nz/react-card-carousel
+npm i -s '@jpd.nz/react-card-carousel'
 ~~~
 
 ~~~terminal
-yarn add @jpd.nz/react-card-carousel
+yarn add '@jpd.nz/react-card-carousel'
 ~~~
 
 

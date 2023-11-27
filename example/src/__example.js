@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import CardCarousel from "./__CardCarousel"
+import CardCarousel from "./__CardCarousel/index.tsx"
 
 import './example.css'
 

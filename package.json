@@ -1,6 +1,6 @@
 {
   "name": "@jpd.nz/react-card-carousel",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -38,9 +38,14 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
     "node-sass": "^9.0.0",
     "postcss": "^8.4.31",
     "rollup": "^4.5.0",
-    "rollup-plugin-postcss": "^4.0.2"
+    "rollup-plugin-postcss": "^4.0.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.2"
   }
 }

@@ -1,4 +1,6 @@
-const Pagination = (props) => {
+import { PaginationPropsInterface } from "../types.ts"
+
+const Pagination = (props:PaginationPropsInterface) => {
 
   const {
     itemCount,
@@ -10,7 +12,7 @@ const Pagination = (props) => {
   for (let index = 0; index <= itemCount; index++) {
     paginationItems.push(
       <button
-        key={index} 
+        key={index}
         onClick={() => goToCard(index)}
         className="cardCarousel-pagination-button" /> 
     )

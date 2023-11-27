@@ -1448,27 +1448,33 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const carouselWrapperRef = require$$0.useRef(null);
     require$$0.useEffect(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
-    }, [settings, defaultSettings]);
+    }, [settings]);
     require$$0.useEffect(() => {
-        if (children === null || children === void 0 ? void 0 : children.length) {
+        if (!(children === null || children === void 0 ? void 0 : children.length))
+            return;
+        if (itemCount !== children.length - 1) {
             setItemCount(children.length - 1);
         }
     }, [children]);
     // Set inital width for the carousel items
     require$$0.useEffect(() => {
-        getItemsWrapperWidth();
-    }, [carouselItemsRef.current, itemWidth, config]);
+        if (itemsWrapperWidth === 0) {
+            getItemsWrapperWidth();
+        }
+    }, [carouselItemsRef.current]);
     // Set inital width for each card, if applicable
     require$$0.useEffect(() => {
-        getItemWidth();
-    }, [carouselWrapperRef.current, config]);
+        if (config.slidesToShow !== 0 && itemWidth === 0) {
+            getItemWidth();
+        }
+    }, [carouselWrapperRef.current]);
     // Add window resize listener
     require$$0.useEffect(() => {
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [typeof window !== undefined, itemWidth]);
+    }, [typeof window !== undefined]);
     // Handle resize of browser window
     const handleResize = () => {
         getItemWidth();

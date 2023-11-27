@@ -70,11 +70,12 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       ...defaultSettings,
       ...settings
     })
-  }, [settings, defaultSettings])
+  }, [settings])
 
 
   useEffect(() => {
-    if (children?.length) {
+    if (!children?.length) return
+    if (itemCount !== children.length-1) {
       setItemCount(children.length-1)
     }
   }, [children])
@@ -82,14 +83,18 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // Set inital width for the carousel items
   useEffect(() => {
-    getItemsWrapperWidth()
-  }, [carouselItemsRef.current, itemWidth, config])
+    if (itemsWrapperWidth === 0) {
+      getItemsWrapperWidth()
+    }
+  }, [carouselItemsRef.current])
 
 
   // Set inital width for each card, if applicable
   useEffect(() => {
-    getItemWidth()
-  }, [carouselWrapperRef.current, config])
+    if (config.slidesToShow !== 0 && itemWidth === 0) {
+      getItemWidth()
+    }
+  }, [carouselWrapperRef.current])
 
 
   // Add window resize listener
@@ -100,7 +105,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined, itemWidth])
+  }, [typeof window !== undefined])
 
   
   // Handle resize of browser window

@@ -110,6 +110,7 @@ export default MyComponent
 | arrows | bool | n/a | true | Enable or disable arrows |
 | nextArrow | html | n/a | false | Provide custom markup for the next button |
 | prevArrow | html | n/a | false | Provide custom markup for the prev button |
+| yieldToImages | bool | n/a | false | Whether to defer calculating the overall container width till all images have loaded. Useful if images have intrinsic dimentions. |
 
 
 ### Event Hooks

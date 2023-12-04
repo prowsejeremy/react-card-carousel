@@ -1427,6 +1427,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         transitionSpeed: 300, // speed for transitions (ms)
         // Control settings
         touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
+        yieldToImages: false,
         pagination: false,
         touchControls: true,
         arrows: true, // enable or disable arrows
@@ -1505,13 +1506,21 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         const paddingWidth = config.gap * itemCount;
         if (carouselChildren) {
             let carouselWidth = 0;
-            Promise.all(Array.from(carouselChildren).map((child) => checkIfCardImagesLoaded(child).then(() => {
-                const childBox = child.getBoundingClientRect();
-                carouselWidth += itemWidth || childBox.width;
-            }))).then(() => {
-                console.log('all loaded!', carouselWidth);
+            if (config.yieldToImages) {
+                Promise.all(Array.from(carouselChildren).map((child) => checkIfCardImagesLoaded(child).then(() => {
+                    const childBox = child.getBoundingClientRect();
+                    carouselWidth += itemWidth || childBox.width;
+                }))).then(() => {
+                    setItemsWrapperWidth(carouselWidth + paddingWidth);
+                });
+            }
+            else {
+                Array.from(carouselChildren).map((child) => {
+                    const childBox = child.getBoundingClientRect();
+                    carouselWidth += itemWidth || childBox.width;
+                });
                 setItemsWrapperWidth(carouselWidth + paddingWidth);
-            });
+            }
         }
     };
     // Main movement function that actually updates index and position values

@@ -4,7 +4,7 @@ export interface SettingsInterface {
   buffer: number;
   gap: number;
   padding: number;
-  slidesToShow: number;
+  cardsToShow: number;
   transitionSpeed: number;
   
   // Control settings

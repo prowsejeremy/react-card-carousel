@@ -34,7 +34,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     buffer: 50, // buffer for whether to switch to next card if it sits right on the border of the viewbox (px)
     gap: 20, // gap size between each card/silde (px)
     padding: 50, // padding either side of the viewbox.
-    slidesToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
+    cardsToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
     transitionSpeed: 300, // speed for transitions (ms)
     
     // Control settings
@@ -83,15 +83,15 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // Set inital width for the carousel items
   useEffect(() => {
-    if (itemsWrapperWidth === 0) {
+    if (itemCount !== 0 && itemsWrapperWidth === 0) {
       getItemsWrapperWidth()
     }
-  }, [carouselItemsRef.current])
+  }, [carouselItemsRef.current, itemCount])
 
 
   // Set inital width for each card, if applicable
   useEffect(() => {
-    if (config.slidesToShow !== 0 && itemWidth === 0) {
+    if (config.cardsToShow !== 0 && itemWidth === 0) {
       getItemWidth()
     }
   }, [carouselWrapperRef.current])
@@ -121,30 +121,51 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   }, [transitionIndex])
 
 
-  // If slidesToShow has been set, calculate the width of each item based on the viewBox size.
+  // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
   const getItemWidth = () => {
-    if (config.slidesToShow !== 0 && carouselWrapperRef.current) {
+    if (config.cardsToShow !== 0 && carouselWrapperRef.current) {
       const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
-      setItemWidth(carouselWrapperBox.width/config.slidesToShow)
+      setItemWidth(carouselWrapperBox.width/config.cardsToShow)
     }
   }
 
+
+  // Check for the presense of images in the card content,
+  // wait for them to load before calculating width of cards.
+  const checkIfCardImagesLoaded = (element:Element) => {
+    const hasImages = element.getElementsByTagName('img')
+
+    if (!hasImages || typeof hasImages !== 'object') return Promise.resolve(true)
+
+    return Promise.all(
+      Array.from(hasImages).map((img) =>
+        new Promise(resolve => { img.onload = img.onerror = resolve; })
+      )
+    )
+  }
+
+
   // Get the inital wrapper width based on the width of all children with their associated padding values
   const getItemsWrapperWidth = (onResize=false) => {
-    if ((onResize && config.slidesToShow === 0) || !carouselItemsRef.current) return
-
-    const carouselChildren = carouselItemsRef.current.children
+    if ((onResize && config.cardsToShow === 0) || !carouselItemsRef.current) return
+    
+    const carouselChildren = carouselItemsRef.current.children;
     const paddingWidth = config.gap * itemCount;
 
     if (carouselChildren) {
       let carouselWidth = 0;
 
-      [...carouselChildren].map((child) => {
-        const childBox = child.getBoundingClientRect()
-        return carouselWidth += itemWidth || childBox.width
-      });
-
-      setItemsWrapperWidth(carouselWidth + paddingWidth)
+      Promise.all(
+        Array.from(carouselChildren).map((child) =>
+          checkIfCardImagesLoaded(child).then(() => {
+            const childBox = child.getBoundingClientRect()
+            carouselWidth += itemWidth || childBox.width
+          })
+        )
+      ).then(() => {
+        console.log('all loaded!', carouselWidth)
+        setItemsWrapperWidth(carouselWidth + paddingWidth)
+      })
     }
   }
 

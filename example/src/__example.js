@@ -13,7 +13,7 @@ const CardCarouselExample = () => {
     touchControls: true,
     gap: 20,
     padding: 80,
-    slidesToShow: 0,
+    cardsToShow: 0,
     beforeChange: (currentIndex, newIndex) => {
       console.log('Before Change', currentIndex, newIndex)
     },
@@ -25,32 +25,31 @@ const CardCarouselExample = () => {
   const carouselItems = [
     {
       title: 'Carousel Card 01',
-      image: 'https://picsum.photos/301/150',
+      image: 'https://picsum.photos/300/300',
       alt: 'my image alt text'
     },
     {
       title: 'Carousel Card 02',
-      image: 'https://picsum.photos/300/150',
+      image: 'https://picsum.photos/150/300',
       alt: 'my image alt text'
     },
     {
       title: 'Carousel Card 03',
-      image: 'https://picsum.photos/302/150',
+      image: 'https://picsum.photos/500/300',
       alt: 'my image alt text'
     },
     {
       title: 'Carousel Card 04',
-      image: 'https://picsum.photos/299/150',
+      image: 'https://picsum.photos/400/300',
       alt: 'my image alt text'
     },
     {
-      title: 'Carousel Card 05',
-      image: 'https://picsum.photos/298/150',
+      title: 'Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.',
       alt: 'my image alt text'
     },
     {
       title: 'Carousel Card 06',
-      image: 'https://picsum.photos/303/150',
+      image: 'https://picsum.photos/800/300',
       alt: 'my image alt text'
     }
   ]
@@ -67,7 +66,7 @@ const CardCarouselExample = () => {
           carouselItems?.map((card, key) => {
             return (
               <div key={key} className='my-carousel-card'>
-                <img src={card.image} alt={card.title || card.alt} />
+                { card.image && <img src={card.image} alt={card.title || card.alt} /> }
                 { card.title && <p>{card.title}</p> }
               </div>
             )

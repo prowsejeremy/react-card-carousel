@@ -94,8 +94,8 @@ export default MyComponent
 | Property | Type | Unit | Default | Description                           |
 | -------- | ---- | ---- | ------- | ------------------------------------- |
 | gap | int | px | 20 | Gap size between each card/silde |
-| padding | int | px | 50 | Padding value either side of the main slider |
-| slidesToShow | int | n/a | 0 | Number of slides to display in one view. Set to 0 to inherit widths from card contents and support variable widths |
+| padding | int | px | 50 | Padding value either side of the main card slider |
+| cardsToShow | int | n/a | 0 | Number of cards to display in one view. Set to 0 to inherit widths from card contents and support variable widths |
 | transitionSpeed | int | ms | 300 | Speed of the carousel move transition |
 
 

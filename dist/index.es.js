@@ -2,6 +2,28 @@ import require$$0, { forwardRef, useState, useRef, useEffect, useImperativeHandl
 
 var jsxRuntime = {exports: {}};
 
+var reactJsxRuntime_production_min = {};
+
+/**
+ * @license React
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var hasRequiredReactJsxRuntime_production_min;
+
+function requireReactJsxRuntime_production_min () {
+	if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
+	hasRequiredReactJsxRuntime_production_min = 1;
+var f=require$$0,k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
+	function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return {$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}reactJsxRuntime_production_min.Fragment=l;reactJsxRuntime_production_min.jsx=q;reactJsxRuntime_production_min.jsxs=q;
+	return reactJsxRuntime_production_min;
+}
+
 var reactJsxRuntime_development = {};
 
 /**
@@ -1012,11 +1034,6 @@ function requireReactJsxRuntime_development () {
 
 	function getSourceInfoErrorAddendum(source) {
 	  {
-	    if (source !== undefined) {
-	      var fileName = source.fileName.replace(/^.*[\\\/]/, '');
-	      var lineNumber = source.lineNumber;
-	      return '\n\nCheck your code at ' + fileName + ':' + lineNumber + '.';
-	    }
 
 	    return '';
 	  }
@@ -1217,6 +1234,7 @@ function requireReactJsxRuntime_development () {
 	  }
 	}
 
+	var didWarnAboutKeySpread = {};
 	function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
 	  {
 	    var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
@@ -1229,7 +1247,7 @@ function requireReactJsxRuntime_development () {
 	        info += ' You likely forgot to export your component from the file ' + "it's defined in, or you might have mixed up default and named imports.";
 	      }
 
-	      var sourceInfo = getSourceInfoErrorAddendum(source);
+	      var sourceInfo = getSourceInfoErrorAddendum();
 
 	      if (sourceInfo) {
 	        info += sourceInfo;
@@ -1287,6 +1305,24 @@ function requireReactJsxRuntime_development () {
 	      }
 	    }
 
+	    {
+	      if (hasOwnProperty.call(props, 'key')) {
+	        var componentName = getComponentNameFromType(type);
+	        var keys = Object.keys(props).filter(function (k) {
+	          return k !== 'key';
+	        });
+	        var beforeExample = keys.length > 0 ? '{key: someKey, ' + keys.join(': ..., ') + ': ...}' : '{key: someKey}';
+
+	        if (!didWarnAboutKeySpread[componentName + beforeExample]) {
+	          var afterExample = keys.length > 0 ? '{' + keys.join(': ..., ') + ': ...}' : '{}';
+
+	          error('A props object containing a "key" prop is being spread into JSX:\n' + '  let props = %s;\n' + '  <%s {...props} />\n' + 'React keys must be passed directly to JSX without using spread:\n' + '  let props = %s;\n' + '  <%s key={someKey} {...props} />', beforeExample, componentName, afterExample, componentName);
+
+	          didWarnAboutKeySpread[componentName + beforeExample] = true;
+	        }
+	      }
+	    }
+
 	    if (type === REACT_FRAGMENT_TYPE) {
 	      validateFragmentProps(element);
 	    } else {
@@ -1322,28 +1358,6 @@ function requireReactJsxRuntime_development () {
 	  })();
 	}
 	return reactJsxRuntime_development;
-}
-
-var reactJsxRuntime_production_min = {};
-
-/**
- * @license React
- * react-jsx-runtime.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var hasRequiredReactJsxRuntime_production_min;
-
-function requireReactJsxRuntime_production_min () {
-	if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
-	hasRequiredReactJsxRuntime_production_min = 1;
-var f=require$$0,k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
-	function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return {$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}reactJsxRuntime_production_min.Fragment=l;reactJsxRuntime_production_min.jsx=q;reactJsxRuntime_production_min.jsxs=q;
-	return reactJsxRuntime_production_min;
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -1390,7 +1404,7 @@ function styleInject(css, ref) {
   if ( ref === void 0 ) ref = {};
   var insertAt = ref.insertAt;
 
-  if (!css || typeof document === 'undefined') { return; }
+  if (typeof document === 'undefined') { return; }
 
   var head = document.head || document.getElementsByTagName('head')[0];
   var style = document.createElement('style');
@@ -1413,7 +1427,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative; }\n  .cardCarousel .cardCarousel-arrow,\n  .cardCarousel .cardCarousel-pagination-button {\n    cursor: pointer;\n    padding: 0;\n    border: none;\n    outline: none;\n    background: none; }\n\n.cardCarousel-inner {\n  position: relative; }\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center; }\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw; }\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out; }\n  .cardCarousel-arrow.disabled {\n    opacity: 0;\n    visibility: hidden; }\n  .cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n    background-color: black; }\n    .cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n      border-color: white; }\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out; }\n  .cardCarousel-arrow-inner:before {\n    content: '';\n    display: block;\n    margin: auto auto auto 20px;\n    width: 12px;\n    height: 12px;\n    border-top: 2px solid black;\n    border-right: 2px solid black;\n    transform: rotate(45deg);\n    transition: all 300ms ease-out; }\n\n.prev-button {\n  left: 20px; }\n  .prev-button .cardCarousel-arrow-inner {\n    transform: rotate(180deg); }\n  @media screen and (min-width: 768px) {\n    .prev-button {\n      left: 50px; } }\n\n.next-button {\n  right: 20px; }\n  @media screen and (min-width: 768px) {\n    .next-button {\n      right: 50px; } }\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0; }\n  .cardCarousel-pagination .cardCarousel-pagination-button {\n    display: block;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n    border: 1px solid black;\n    background-color: transparent;\n    transition: all 300ms ease-out; }\n    .cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n      background-color: black; }\n";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n}\n.cardCarousel .cardCarousel-arrow,\n.cardCarousel .cardCarousel-pagination-button {\n  cursor: pointer;\n  padding: 0;\n  border: none;\n  outline: none;\n  background: none;\n}\n\n.cardCarousel-inner {\n  position: relative;\n}\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out;\n}\n.cardCarousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n  background-color: black;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n  border-color: white;\n}\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-arrow-inner:before {\n  content: \"\";\n  display: block;\n  margin: auto auto auto 20px;\n  width: 12px;\n  height: 12px;\n  border-top: 2px solid black;\n  border-right: 2px solid black;\n  transform: rotate(45deg);\n  transition: all 300ms ease-out;\n}\n\n.prev-button {\n  left: 20px;\n}\n.prev-button .cardCarousel-arrow-inner {\n  transform: rotate(180deg);\n}\n@media screen and (min-width: 768px) {\n  .prev-button {\n    left: 50px;\n  }\n}\n\n.next-button {\n  right: 20px;\n}\n@media screen and (min-width: 768px) {\n  .next-button {\n    right: 50px;\n  }\n}\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button {\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 5px;\n  border: 1px solid black;\n  background-color: transparent;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n  background-color: black;\n}";
 styleInject(css_248z);
 
 const CardCarousel = forwardRef((props, carouselRef) => {

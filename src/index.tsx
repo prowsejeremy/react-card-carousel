@@ -56,6 +56,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     ...settings
   })
 
+  const [displayControls, setDisplayControls] = useState<boolean>(true)
   const [itemWidth, setItemWidth] = useState<number>(0)
   const [itemsWrapperWidth, setItemsWrapperWidth] = useState<number>(0)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -106,13 +107,17 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined])
+  }, [typeof window !== undefined, itemsWrapperWidth])
 
   
   // Handle resize of browser window
   const handleResize = () => {
     getItemWidth()
     getItemsWrapperWidth(true)
+
+    // Check width of all child elements, if less than wrapper, don't render controls
+    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
+    setDisplayControls(itemsWrapperWidth > carouselWrapperBox.width)
   }
 
 
@@ -178,8 +183,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
         setItemsWrapperWidth(carouselWidth + paddingWidth)
       }
-
-
     }
   }
 
@@ -322,23 +325,27 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
           }) }
         </div>
       </div>
+      
+      {displayControls &&
+        <>
+          { config.pagination &&
+            <Pagination
+              itemCount={itemCount}
+              goToCard={goToCard}
+            />
+          }
 
-      { config.pagination &&
-        <Pagination
-          itemCount={itemCount}
-          goToCard={goToCard}
-        />
-      }
-
-      { config.arrows &&
-        <ArrowButtons
-          nextArrow={config.nextArrow}
-          prevArrow={config.prevArrow}
-          currentIndex={currentIndex}
-          prevCard={prevCard}
-          itemCount={itemCount}
-          nextCard={nextCard}
-        />
+          { config.arrows &&
+            <ArrowButtons
+              nextArrow={config.nextArrow}
+              prevArrow={config.prevArrow}
+              currentIndex={currentIndex}
+              prevCard={prevCard}
+              itemCount={itemCount}
+              nextCard={nextCard}
+            />
+          }
+        </>
       }
 
     </div>

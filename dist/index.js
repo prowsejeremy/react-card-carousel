@@ -1429,7 +1429,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n}\n.cardCarousel .cardCarousel-arrow,\n.cardCarousel .cardCarousel-pagination-button {\n  cursor: pointer;\n  padding: 0;\n  border: none;\n  outline: none;\n  background: none;\n}\n\n.cardCarousel-inner {\n  position: relative;\n}\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out;\n}\n.cardCarousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n  background-color: black;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n  border-color: white;\n}\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-arrow-inner:before {\n  content: \"\";\n  display: block;\n  margin: auto auto auto 20px;\n  width: 12px;\n  height: 12px;\n  border-top: 2px solid black;\n  border-right: 2px solid black;\n  transform: rotate(45deg);\n  transition: all 300ms ease-out;\n}\n\n.prev-button {\n  left: 20px;\n}\n.prev-button .cardCarousel-arrow-inner {\n  transform: rotate(180deg);\n}\n@media screen and (min-width: 768px) {\n  .prev-button {\n    left: 50px;\n  }\n}\n\n.next-button {\n  right: 20px;\n}\n@media screen and (min-width: 768px) {\n  .next-button {\n    right: 50px;\n  }\n}\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button {\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 5px;\n  border: 1px solid black;\n  background-color: transparent;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n  background-color: black;\n}";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  overflow: hidden;\n}\n.cardCarousel .cardCarousel-arrow,\n.cardCarousel .cardCarousel-pagination-button {\n  cursor: pointer;\n  padding: 0;\n  border: none;\n  outline: none;\n  background: none;\n}\n\n.cardCarousel-inner {\n  position: relative;\n}\n\n.cardCarousel-items {\n  transition: all 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out;\n}\n.cardCarousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n  background-color: black;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n  border-color: white;\n}\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-arrow-inner:before {\n  content: \"\";\n  display: block;\n  margin: auto auto auto 20px;\n  width: 12px;\n  height: 12px;\n  border-top: 2px solid black;\n  border-right: 2px solid black;\n  transform: rotate(45deg);\n  transition: all 300ms ease-out;\n}\n\n.prev-button {\n  left: 20px;\n}\n.prev-button .cardCarousel-arrow-inner {\n  transform: rotate(180deg);\n}\n@media screen and (min-width: 768px) {\n  .prev-button {\n    left: 50px;\n  }\n}\n\n.next-button {\n  right: 20px;\n}\n@media screen and (min-width: 768px) {\n  .next-button {\n    right: 50px;\n  }\n}\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button {\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 5px;\n  border: 1px solid black;\n  background-color: transparent;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n  background-color: black;\n}";
 styleInject(css_248z);
 
 const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
@@ -1454,6 +1454,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         afterChange: null // fires just after change
     };
     const [config, setConfig] = require$$0.useState(Object.assign(Object.assign({}, defaultSettings), settings));
+    const [displayControls, setDisplayControls] = require$$0.useState(true);
     const [itemWidth, setItemWidth] = require$$0.useState(0);
     const [itemsWrapperWidth, setItemsWrapperWidth] = require$$0.useState(0);
     const [currentIndex, setCurrentIndex] = require$$0.useState(0);
@@ -1489,11 +1490,14 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [typeof window !== undefined]);
+    }, [typeof window !== undefined, itemsWrapperWidth]);
     // Handle resize of browser window
     const handleResize = () => {
         getItemWidth();
         getItemsWrapperWidth(true);
+        // Check width of all child elements, if less than wrapper, don't render controls
+        const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect();
+        setDisplayControls(itemsWrapperWidth > carouselWrapperBox.width);
     };
     // Trigger move logic when the transition index changes
     require$$0.useEffect(() => {
@@ -1631,9 +1635,10 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
                         "transitionDuration": `${config.transitionSpeed}ms`
                     }, children: children === null || children === void 0 ? void 0 : children.map((child, key) => {
                         return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { "width": `${itemWidth}px` } : {}, children: child }, key));
-                    }) }) }), config.pagination &&
-                jsxRuntimeExports.jsx(Pagination, { itemCount: itemCount, goToCard: goToCard }), config.arrows &&
-                jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard })] }));
+                    }) }) }), displayControls &&
+                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination &&
+                            jsxRuntimeExports.jsx(Pagination, { itemCount: itemCount, goToCard: goToCard }), config.arrows &&
+                            jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard })] })] }));
 });
 
 module.exports = CardCarousel;

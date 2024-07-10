@@ -56,7 +56,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     ...settings
   })
 
-  const [displayControls, setDisplayControls] = useState<boolean>(true)
+  const [displayControls, setDisplayControls] = useState<boolean>(false)
   const [itemWidth, setItemWidth] = useState<number>(0)
   const [itemsWrapperWidth, setItemsWrapperWidth] = useState<number>(0)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -65,6 +65,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   const carouselItemsRef = useRef<HTMLDivElement | null>(null)
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null)
+  const offsetRef = useRef<number>(0)
 
 
   useEffect(() => {
@@ -90,6 +91,11 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     }
   }, [carouselItemsRef.current, itemCount])
 
+  // Run checks to reposition the carousel items on width change
+  useEffect(() => {
+    itemsWrapperWidth !== 0 && updateCarouselPosition()
+  }, [itemsWrapperWidth])
+
 
   // Set inital width for each card, if applicable
   useEffect(() => {
@@ -107,17 +113,14 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined, itemsWrapperWidth])
+  }, [typeof window !== undefined,])
 
   
   // Handle resize of browser window
   const handleResize = () => {
     getItemWidth()
     getItemsWrapperWidth(true)
-
-    // Check width of all child elements, if less than wrapper, don't render controls
-    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
-    setDisplayControls(itemsWrapperWidth > carouselWrapperBox.width)
+    updateCarouselPosition(true)
   }
 
 
@@ -125,6 +128,33 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   useEffect(() => {
     handleMove(transitionIndex)
   }, [transitionIndex])
+
+
+  // /////////////////////////////////
+  // WIP - Tidy up reset on resize
+  // /////////////////////////////////
+
+  const updateCarouselPosition = (fromresize = false) => {
+    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
+    const carouselItemsBox = carouselItemsRef.current.getBoundingClientRect()
+
+    if (carouselItemsBox.width > carouselWrapperBox.width) {
+      setDisplayControls(true)
+      
+      // If at the end of the carousel, keep items against the right edge
+      const diff = (carouselItemsBox.right - carouselWrapperBox.right) * -1
+      if (diff >= 0) {
+        const moveVal = carouselItemsBox.width - carouselWrapperBox.width
+        carouselItemsRef.current.style.transform = `translateX(${-moveVal}px)`
+      }
+    } else {
+
+      // Check width of all child elements, if less than wrapper, don't render controls
+      // and reset to start of carousel
+      setDisplayControls(false)
+      setTransitionIndex(0)
+    }
+  }
 
 
   // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
@@ -216,6 +246,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       config.beforeChange && config.beforeChange(currentIndex, transitionIndex)
 
       const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir)
+      offsetRef.current = moveVal
       carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`
     }
 
@@ -299,7 +330,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   // Main Carousel markup
   return (
     <div
-      className={`cardCarousel ${itemsWrapperWidth ? 'show' : ''}`}
+      className={`cardCarousel ${itemsWrapperWidth !== 0 ? 'show' : ''}`}
       onTouchStart={ handleTouchStart }
       onTouchEnd={ handleTouchEnd }
       style={{ "padding": `0 ${config.padding}px` }}>
@@ -308,7 +339,9 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
           ref={carouselItemsRef}
           className="cardCarousel-items"
           style={{
-            "width": itemsWrapperWidth ? `${itemsWrapperWidth}px` : '99999px',
+            "display": "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
+            "alignItems": "center",  // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
+            "width": itemsWrapperWidth !== 0 ? `${itemsWrapperWidth}px` : '99999px',
             "gap": `${config.gap}px`,
             "transitionDuration": `${config.transitionSpeed}ms`
           }}>

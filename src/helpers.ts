@@ -8,7 +8,7 @@ export const itemInView = (currentItemBox:DOMRect, viewBox:DOMRect, buffer:numbe
 export const getMoveVal = (item:Element, viewBox:DOMRect, dir:string='next'): number => {
   if (!item || !(item instanceof HTMLElement) || !viewBox) return
 
-  if (dir == 'next') {
+  if (dir === 'next') {
     return (item.offsetLeft - viewBox.width + item.offsetWidth) * -1
   } else {
     return item.offsetLeft * -1

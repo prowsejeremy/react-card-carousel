@@ -44,15 +44,15 @@ const CardCarouselExample = () => {
       image: 'https://picsum.photos/400/300',
       alt: 'my image alt text'
     },
-    {
-      title: 'Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.',
-      alt: 'my image alt text'
-    },
-    {
-      title: 'Carousel Card 06',
-      image: 'https://picsum.photos/800/300',
-      alt: 'my image alt text'
-    }
+    // {
+    //   title: 'Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.',
+    //   alt: 'my image alt text'
+    // },
+    // {
+    //   title: 'Carousel Card 06',
+    //   image: 'https://picsum.photos/800/300',
+    //   alt: 'my image alt text'
+    // }
   ]
 
   return (

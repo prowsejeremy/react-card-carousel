@@ -104,7 +104,6 @@ export default MyComponent
 | Property | Type | Unit | Default | Description                           |
 | -------- | ---- | ---- | ------- | ------------------------------------- |
 | buffer | int | px | 50 | A buffer for the edge of the carousel viewbox. If an item in the carousel overlaps the viewbox by this amount, treat it as visible and skip to show the next item on change |
-| touchChangeThreshold | int | px | 100 | How far someone has to swipe on a touch device to trigger a change |
 | pagination | bool | n/a | false | Enable or disable pagination |
 | touchControls | bool | n/a | true | Enable or disable touch controls |
 | arrows | bool | n/a | true | Enable or disable arrows |

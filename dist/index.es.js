@@ -1,5 +1,37 @@
 import require$$0, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
 
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol */
+
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 var jsxRuntime = {exports: {}};
 
 var reactJsxRuntime_production_min = {};
@@ -1427,10 +1459,11 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  overflow: hidden;\n}\n.cardCarousel .cardCarousel-arrow,\n.cardCarousel .cardCarousel-pagination-button {\n  cursor: pointer;\n  padding: 0;\n  border: none;\n  outline: none;\n  background: none;\n}\n\n.cardCarousel-inner {\n  position: relative;\n}\n\n.cardCarousel-items {\n  transition: transform 400ms ease-out;\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out;\n}\n.cardCarousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n  background-color: black;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n  border-color: white;\n}\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-arrow-inner:before {\n  content: \"\";\n  display: block;\n  margin: auto auto auto 20px;\n  width: 12px;\n  height: 12px;\n  border-top: 2px solid black;\n  border-right: 2px solid black;\n  transform: rotate(45deg);\n  transition: all 300ms ease-out;\n}\n\n.prev-button {\n  left: 20px;\n}\n.prev-button .cardCarousel-arrow-inner {\n  transform: rotate(180deg);\n}\n@media screen and (min-width: 768px) {\n  .prev-button {\n    left: 50px;\n  }\n}\n\n.next-button {\n  right: 20px;\n}\n@media screen and (min-width: 768px) {\n  .next-button {\n    right: 50px;\n  }\n}\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button {\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 5px;\n  border: 1px solid black;\n  background-color: transparent;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n  background-color: black;\n}";
+var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  overflow: hidden;\n}\n.cardCarousel .cardCarousel-arrow,\n.cardCarousel .cardCarousel-pagination-button {\n  cursor: pointer;\n  padding: 0;\n  border: none;\n  outline: none;\n  background: none;\n}\n\n.cardCarousel-inner {\n  position: relative;\n}\n\n.cardCarousel-items {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n\n.cardCarousel-item-content {\n  width: auto;\n  display: inline-block;\n  overflow: hidden;\n  max-width: 100vw;\n}\n\n.cardCarousel-arrow {\n  position: absolute;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 10;\n  opacity: 1;\n  visibility: visible;\n  transition: all 400ms ease-out;\n}\n.cardCarousel-arrow.disabled {\n  opacity: 0;\n  visibility: hidden;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner {\n  background-color: black;\n}\n.cardCarousel-arrow:hover .cardCarousel-arrow-inner:before {\n  border-color: white;\n}\n\n.cardCarousel-arrow-inner {\n  display: flex;\n  width: 60px;\n  height: 60px;\n  border-radius: 30px;\n  background-color: white;\n  position: relative;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-arrow-inner:before {\n  content: \"\";\n  display: block;\n  margin: auto auto auto 20px;\n  width: 12px;\n  height: 12px;\n  border-top: 2px solid black;\n  border-right: 2px solid black;\n  transform: rotate(45deg);\n  transition: all 300ms ease-out;\n}\n\n.prev-button {\n  left: 20px;\n}\n.prev-button .cardCarousel-arrow-inner {\n  transform: rotate(180deg);\n}\n@media screen and (min-width: 768px) {\n  .prev-button {\n    left: 50px;\n  }\n}\n\n.next-button {\n  right: 20px;\n}\n@media screen and (min-width: 768px) {\n  .next-button {\n    right: 50px;\n  }\n}\n\n.cardCarousel-pagination {\n  width: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: 10px;\n  position: relative;\n  margin: 40px auto 0;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button {\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 5px;\n  border: 1px solid black;\n  background-color: transparent;\n  transition: all 300ms ease-out;\n}\n.cardCarousel-pagination .cardCarousel-pagination-button.active, .cardCarousel-pagination .cardCarousel-pagination-button:hover {\n  background-color: black;\n}";
 styleInject(css_248z);
 
 const CardCarousel = forwardRef((props, carouselRef) => {
+    var _a, _b;
     const { children, settings } = props;
     const defaultSettings = {
         // Presentation settings
@@ -1440,7 +1473,6 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         cardsToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
         transitionSpeed: 300, // speed for transitions (ms)
         // Control settings
-        touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
         yieldToImages: false,
         pagination: false,
         touchControls: true,
@@ -1452,15 +1484,22 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         afterChange: null // fires just after change
     };
     const [config, setConfig] = useState(Object.assign(Object.assign({}, defaultSettings), settings));
+    // State
+    const [touchX, setTouchX] = useState(0);
     const [displayControls, setDisplayControls] = useState(false);
     const [itemWidth, setItemWidth] = useState(0);
     const [itemsWrapperWidth, setItemsWrapperWidth] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [transitionIndex, setTransitionIndex] = useState(0);
     const [itemCount, setItemCount] = useState(0);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [animateTransition, setAnimateTransition] = useState(false);
+    // Refs
     const carouselItemsRef = useRef(null);
     const carouselWrapperRef = useRef(null);
     const offsetRef = useRef(0);
+    // Key Bounding Boxes
+    const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
+    const itemsBox = (_b = carouselItemsRef.current) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
     useEffect(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
     }, [settings]);
@@ -1471,6 +1510,12 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             setItemCount(children.length - 1);
         }
     }, [children]);
+    useEffect(() => {
+        if (animateTransition) {
+            scrub(`${offsetRef.current}px`);
+            setTimeout(() => { setAnimateTransition(false); }, config.transitionSpeed);
+        }
+    }, [animateTransition]);
     // Set inital width for the carousel items
     useEffect(() => {
         if (itemCount !== 0 && itemsWrapperWidth === 0) {
@@ -1493,29 +1538,25 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [typeof window !== undefined,]);
+    }, [typeof window !== undefined, imagesLoaded]);
     // Handle resize of browser window
     const handleResize = () => {
-        getItemWidth();
-        getItemsWrapperWidth(true);
-        updateCarouselPosition(true);
+        setItemsWrapperWidth(99999);
+        setTimeout(() => {
+            getItemWidth();
+            getItemsWrapperWidth();
+        }, 100);
     };
-    // Trigger move logic when the transition index changes
-    useEffect(() => {
-        handleMove(transitionIndex);
-    }, [transitionIndex]);
     // /////////////////////////////////
     // WIP - Tidy up reset on resize
     // /////////////////////////////////
-    const updateCarouselPosition = (fromresize = false) => {
-        const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect();
-        const carouselItemsBox = carouselItemsRef.current.getBoundingClientRect();
-        if (carouselItemsBox.width > carouselWrapperBox.width) {
+    const updateCarouselPosition = () => {
+        if (itemsBox.width > wrapperBox.width) {
             setDisplayControls(true);
             // If at the end of the carousel, keep items against the right edge
-            const diff = (carouselItemsBox.right - carouselWrapperBox.right) * -1;
+            const diff = (itemsBox.right - wrapperBox.right) * -1;
             if (diff >= 0) {
-                const moveVal = carouselItemsBox.width - carouselWrapperBox.width;
+                const moveVal = itemsBox.width - wrapperBox.width;
                 carouselItemsRef.current.style.transform = `translateX(${-moveVal}px)`;
             }
         }
@@ -1523,14 +1564,13 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             // Check width of all child elements, if less than wrapper, don't render controls
             // and reset to start of carousel
             setDisplayControls(false);
-            setTransitionIndex(0);
+            snapToItem(0);
         }
     };
     // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
     const getItemWidth = () => {
         if (config.cardsToShow !== 0 && carouselWrapperRef.current) {
-            const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect();
-            setItemWidth(carouselWrapperBox.width / config.cardsToShow);
+            setItemWidth(wrapperBox.width / config.cardsToShow);
         }
     };
     // Check for the presense of images in the card content,
@@ -1542,18 +1582,19 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         return Promise.all(Array.from(hasImages).map((img) => new Promise(resolve => { img.onload = img.onerror = resolve; })));
     };
     // Get the inital wrapper width based on the width of all children with their associated padding values
-    const getItemsWrapperWidth = (onResize = false) => {
-        if ((onResize && config.cardsToShow === 0) || !carouselItemsRef.current)
+    const getItemsWrapperWidth = () => {
+        if (!carouselItemsRef.current)
             return;
         const carouselChildren = carouselItemsRef.current.children;
         const paddingWidth = config.gap * itemCount;
         if (carouselChildren) {
             let carouselWidth = 0;
-            if (config.yieldToImages) {
+            if (config.yieldToImages && !imagesLoaded) {
                 Promise.all(Array.from(carouselChildren).map((child) => checkIfCardImagesLoaded(child).then(() => {
                     const childBox = child.getBoundingClientRect();
                     carouselWidth += itemWidth || childBox.width;
                 }))).then(() => {
+                    setImagesLoaded(true);
                     setItemsWrapperWidth(carouselWidth + paddingWidth);
                 });
             }
@@ -1566,55 +1607,82 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             }
         }
     };
-    // Main movement function that actually updates index and position values
-    const handleMove = (index) => {
-        if (currentIndex === index ||
-            !carouselItemsRef.current ||
-            !carouselWrapperRef.current)
+    const snapToItem = (index_1, ...args_1) => __awaiter(void 0, [index_1, ...args_1], void 0, function* (index, skipVisibleItems = true) {
+        // Check if we are at the start of the list and haven't changed index,
+        // if so just center to 0 and return.
+        if (currentIndex === index && currentIndex === 0) {
+            offsetRef.current = 0;
+            setAnimateTransition(true);
             return;
-        const dir = index > currentIndex ? 'next' : 'prev';
-        const currentItem = carouselItemsRef.current.children.item(index);
-        if (!currentItem)
+        }
+        let dir = index >= currentIndex ? 'next' : 'prev';
+        const targetItem = carouselItemsRef.current.children.item(index);
+        if (!targetItem)
             return;
-        const currentItemBox = currentItem.getBoundingClientRect();
-        const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect();
-        if (itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
+        const targetItemBox = targetItem.getBoundingClientRect();
+        if (skipVisibleItems && itemInView(targetItemBox, wrapperBox, config.buffer)) {
             if (dir === 'next') {
-                return setTransitionIndex(transitionIndex + 1);
+                return snapToItem(index + 1);
             }
             else {
-                return setTransitionIndex(transitionIndex - 1);
+                return snapToItem(index - 1);
             }
         }
         else {
             // trigger beforeChange listener
-            config.beforeChange && config.beforeChange(currentIndex, transitionIndex);
-            const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir);
+            config.beforeChange && config.beforeChange(currentIndex, index);
+            const moveVal = yield getMoveVal(targetItem, wrapperBox, dir);
+            // Update offset.
             offsetRef.current = moveVal;
-            carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`;
+            setAnimateTransition(true);
+            setCurrentIndex(index);
+            config.afterChange && config.afterChange(index);
         }
-        setCurrentIndex(transitionIndex);
-        // trigger afterChange listener
-        config.afterChange && config.afterChange(transitionIndex);
-    };
-    // Touch Controls
-    let touchStartVal = 0;
+    });
     const handleTouchStart = (e) => {
+        var _a, _b;
         if (!config.touchControls)
             return;
-        touchStartVal = e.changedTouches[0].clientX;
+        const _touchX = (_a = e.x) !== null && _a !== void 0 ? _a : (_b = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _b === void 0 ? void 0 : _b.clientX; // desktop event props ?? mobile (touch) event props
+        setTouchX(_touchX);
     };
-    const handleTouchEnd = (e) => {
+    const handleTouchMove = (e) => {
+        var _a, _b;
         if (!config.touchControls)
             return;
-        let touchEndVal = e.changedTouches[0].clientX;
-        let touchDelta = touchEndVal - touchStartVal;
-        if (touchDelta > config.touchChangeThreshold) {
-            return handleMoveInteract('prev');
-        }
-        else if (touchDelta * -1 > config.touchChangeThreshold) {
-            return handleMoveInteract('next');
-        }
+        const _eX = (_a = e.x) !== null && _a !== void 0 ? _a : (_b = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _b === void 0 ? void 0 : _b.clientX; // desktop event props ?? mobile (touch) event props
+        const _touchDelta = _eX - touchX;
+        scrub(`${offsetRef.current + _touchDelta}px`);
+    };
+    const handleTouchEnd = () => {
+        if (!config.touchControls)
+            return;
+        checkActiveItem();
+    };
+    // Handle move transform
+    const scrub = (val) => {
+        carouselItemsRef.current.style.transform = `translateX(${val})`;
+    };
+    // Check which item is currently front and center
+    const checkActiveItem = (callback) => {
+        const scrollItems = carouselItemsRef.current.children;
+        const centerPoint = wrapperBox.width / 2;
+        const centerPointBuffer = config.gap / 2;
+        // Itterate over each child and check it's position
+        Array.from(scrollItems).map((child, index) => {
+            const childRect = child.getBoundingClientRect();
+            // If the childs left bounds are less than the center point and right bounds are greater than
+            // the center point, we've found our star!
+            if ((childRect.left - wrapperBox.left - centerPointBuffer <= centerPoint &&
+                childRect.right - wrapperBox.left + centerPointBuffer >= centerPoint)
+                ||
+                    (childRect.left > centerPoint && 0 === index) // check for first item
+                ||
+                    (childRect.right < centerPoint && itemCount === index) // check for last item
+            ) {
+                snapToItem(index, false);
+            }
+        });
     };
     // Generic movement function called by next / prev movement interactions.
     const handleMoveInteract = (dir) => {
@@ -1625,7 +1693,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         else {
             changedIndex = currentIndex - 1 > 0 ? currentIndex - 1 : 0;
         }
-        return setTransitionIndex(changedIndex);
+        return snapToItem(changedIndex);
     };
     // Interaction functions
     const nextCard = () => handleMoveInteract('next');
@@ -1634,11 +1702,10 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         if (!carouselItemsRef.current ||
             !carouselWrapperRef.current)
             return;
-        const currentItem = carouselItemsRef.current.children.item(index);
-        const currentItemBox = currentItem.getBoundingClientRect();
-        const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect();
-        if (!itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
-            setTransitionIndex(index);
+        const targetItem = carouselItemsRef.current.children.item(index);
+        const targetItemBox = targetItem.getBoundingClientRect();
+        if (!itemInView(targetItemBox, wrapperBox, config.buffer)) {
+            snapToItem(index);
         }
     };
     // Pass functions to external
@@ -1653,12 +1720,12 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     if (children.length < 1)
         return null;
     // Main Carousel markup
-    return (jsxRuntimeExports.jsxs("div", { className: `cardCarousel ${itemsWrapperWidth !== 0 ? 'show' : ''}`, onTouchStart: handleTouchStart, onTouchEnd: handleTouchEnd, style: { "padding": `0 ${config.padding}px` }, children: [jsxRuntimeExports.jsx("div", { className: "cardCarousel-inner", ref: carouselWrapperRef, children: jsxRuntimeExports.jsx("div", { ref: carouselItemsRef, className: "cardCarousel-items", style: {
+    return (jsxRuntimeExports.jsxs("div", { className: `cardCarousel ${itemsWrapperWidth !== 0 ? 'show' : ''}`, style: { "padding": `0 ${config.padding}px` }, children: [jsxRuntimeExports.jsx("div", { className: "cardCarousel-inner", ref: carouselWrapperRef, onTouchStart: handleTouchStart, onTouchMove: handleTouchMove, onTouchEnd: handleTouchEnd, children: jsxRuntimeExports.jsx("div", { ref: carouselItemsRef, className: "cardCarousel-items", style: {
                         "display": "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
                         "alignItems": "center", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
                         "width": itemsWrapperWidth !== 0 ? `${itemsWrapperWidth}px` : '99999px',
                         "gap": `${config.gap}px`,
-                        "transitionDuration": `${config.transitionSpeed}ms`
+                        "transition": animateTransition ? `transform ease-in-out ${config.transitionSpeed}ms` : ''
                     }, children: children === null || children === void 0 ? void 0 : children.map((child, key) => {
                         return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { "width": `${itemWidth}px` } : {}, children: child }, key));
                     }) }) }), displayControls &&

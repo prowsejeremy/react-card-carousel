@@ -8,7 +8,6 @@ export interface SettingsInterface {
   transitionSpeed: number;
   
   // Control settings
-  touchChangeThreshold: number;
   yieldToImages: boolean,
   pagination: boolean;
   touchControls: boolean;

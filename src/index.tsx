@@ -38,7 +38,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     transitionSpeed: 300, // speed for transitions (ms)
     
     // Control settings
-    touchChangeThreshold: 100, // how far someone has to swipe on a touch device to trigger a change (px)
     yieldToImages: false,
     pagination: false,
     touchControls: true,
@@ -55,17 +54,25 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     ...defaultSettings,
     ...settings
   })
-
+  
+  // State
+  const [touchX, setTouchX] = useState<number>(0)
   const [displayControls, setDisplayControls] = useState<boolean>(false)
   const [itemWidth, setItemWidth] = useState<number>(0)
   const [itemsWrapperWidth, setItemsWrapperWidth] = useState<number>(0)
   const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const [transitionIndex, setTransitionIndex] = useState<number>(0)
   const [itemCount, setItemCount] = useState<number>(0)
+  const [imagesLoaded, setImagesLoaded] = useState<boolean>(false)
+  const [animateTransition, setAnimateTransition] = useState<boolean>(false)
 
+  // Refs
   const carouselItemsRef = useRef<HTMLDivElement | null>(null)
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null)
   const offsetRef = useRef<number>(0)
+
+  // Key Bounding Boxes
+  const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
+  const itemsBox = carouselItemsRef.current?.getBoundingClientRect()
 
 
   useEffect(() => {
@@ -82,6 +89,13 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       setItemCount(children.length-1)
     }
   }, [children])
+
+  useEffect(() => {
+    if (animateTransition) {
+      scrub(`${offsetRef.current}px`)
+      setTimeout(() => {setAnimateTransition(false)}, config.transitionSpeed)
+    }
+  }, [animateTransition])
 
 
   // Set inital width for the carousel items
@@ -113,38 +127,32 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined,])
+  }, [typeof window !== undefined, imagesLoaded])
 
   
   // Handle resize of browser window
   const handleResize = () => {
-    getItemWidth()
-    getItemsWrapperWidth(true)
-    updateCarouselPosition(true)
+    setItemsWrapperWidth(99999)
+    setTimeout(() => {
+      getItemWidth()
+      getItemsWrapperWidth()
+    }, 100)
   }
-
-
-  // Trigger move logic when the transition index changes
-  useEffect(() => {
-    handleMove(transitionIndex)
-  }, [transitionIndex])
 
 
   // /////////////////////////////////
   // WIP - Tidy up reset on resize
   // /////////////////////////////////
 
-  const updateCarouselPosition = (fromresize = false) => {
-    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
-    const carouselItemsBox = carouselItemsRef.current.getBoundingClientRect()
+  const updateCarouselPosition = () => {
 
-    if (carouselItemsBox.width > carouselWrapperBox.width) {
+    if (itemsBox.width > wrapperBox.width) {
       setDisplayControls(true)
       
       // If at the end of the carousel, keep items against the right edge
-      const diff = (carouselItemsBox.right - carouselWrapperBox.right) * -1
+      const diff = (itemsBox.right - wrapperBox.right) * -1
       if (diff >= 0) {
-        const moveVal = carouselItemsBox.width - carouselWrapperBox.width
+        const moveVal = itemsBox.width - wrapperBox.width
         carouselItemsRef.current.style.transform = `translateX(${-moveVal}px)`
       }
     } else {
@@ -152,7 +160,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       // Check width of all child elements, if less than wrapper, don't render controls
       // and reset to start of carousel
       setDisplayControls(false)
-      setTransitionIndex(0)
+      snapToItem(0)
     }
   }
 
@@ -160,8 +168,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
   const getItemWidth = () => {
     if (config.cardsToShow !== 0 && carouselWrapperRef.current) {
-      const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
-      setItemWidth(carouselWrapperBox.width/config.cardsToShow)
+      setItemWidth(wrapperBox.width/config.cardsToShow)
     }
   }
 
@@ -180,10 +187,9 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     )
   }
 
-
   // Get the inital wrapper width based on the width of all children with their associated padding values
-  const getItemsWrapperWidth = (onResize=false) => {
-    if ((onResize && config.cardsToShow === 0) || !carouselItemsRef.current) return
+  const getItemsWrapperWidth = () => {
+    if (!carouselItemsRef.current) return
     
     const carouselChildren = carouselItemsRef.current.children;
     const paddingWidth = config.gap * itemCount;
@@ -191,8 +197,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     if (carouselChildren) {
       let carouselWidth = 0;
 
-      if (config.yieldToImages) {
-
+      if (config.yieldToImages && !imagesLoaded) {
         Promise.all(
           Array.from(carouselChildren).map((child) =>
             checkIfCardImagesLoaded(child).then(() => {
@@ -201,82 +206,108 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
             })
           )
         ).then(() => {
+          setImagesLoaded(true)
           setItemsWrapperWidth(carouselWidth + paddingWidth)
         })
 
       } else {
-
         Array.from(carouselChildren).map((child) => {
           const childBox = child.getBoundingClientRect()
           carouselWidth += itemWidth || childBox.width
         });
-
         setItemsWrapperWidth(carouselWidth + paddingWidth)
       }
     }
   }
 
-  // Main movement function that actually updates index and position values
-  const handleMove = (index) => {
+  const snapToItem = async (index:number, skipVisibleItems:boolean = true) => {
 
-    if (
-      currentIndex === index ||
-      !carouselItemsRef.current ||
-      !carouselWrapperRef.current
-    ) return
+    // Check if we are at the start of the list and haven't changed index,
+    // if so just center to 0 and return.
+    if (currentIndex === index && currentIndex === 0) {
+      offsetRef.current = 0
+      setAnimateTransition(true)
+      return
+    }
+ 
+    let dir = index >= currentIndex ? 'next' : 'prev'
 
-    const dir = index > currentIndex ? 'next' : 'prev'
+    const targetItem = carouselItemsRef.current.children.item(index)
 
-    const currentItem = carouselItemsRef.current.children.item(index)
-    
-    if (!currentItem) return
+    if (!targetItem) return
 
-    const currentItemBox = currentItem.getBoundingClientRect()
-    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
+    const targetItemBox = targetItem.getBoundingClientRect()
 
-    if (itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
+    if (skipVisibleItems && itemInView(targetItemBox, wrapperBox, config.buffer)) {
       if (dir === 'next') {
-        return setTransitionIndex(transitionIndex+1)
+        return snapToItem(index+1)
       } else {
-        return setTransitionIndex(transitionIndex-1)
+        return snapToItem(index-1)
       }
     } else {
       
       // trigger beforeChange listener
-      config.beforeChange && config.beforeChange(currentIndex, transitionIndex)
+      config.beforeChange && config.beforeChange(currentIndex, index)
 
-      const moveVal = getMoveVal(currentItem, carouselWrapperBox, dir)
+      const moveVal = await getMoveVal(targetItem, wrapperBox, dir)
+      
+      // Update offset.
       offsetRef.current = moveVal
-      carouselItemsRef.current.style.transform = `translateX(${moveVal}px)`
-    }
-
-    setCurrentIndex(transitionIndex)
+      setAnimateTransition(true)
+      setCurrentIndex(index)
     
-    // trigger afterChange listener
-    config.afterChange && config.afterChange(transitionIndex)
+      config.afterChange && config.afterChange(index)
+    }
   }
 
-
-  // Touch Controls
-  let touchStartVal = 0
   const handleTouchStart = (e) => {
     if (!config.touchControls) return
-    
-    touchStartVal = e.changedTouches[0].clientX
+    const _touchX = e.x ?? e?.changedTouches[0]?.clientX // desktop event props ?? mobile (touch) event props
+    setTouchX(_touchX)
   }
 
-
-  const handleTouchEnd = (e) => {
+  const handleTouchMove = (e) => {
     if (!config.touchControls) return
-    
-    let touchEndVal = e.changedTouches[0].clientX
-    let touchDelta = touchEndVal-touchStartVal
+    const _eX = e.x ?? e?.changedTouches[0]?.clientX // desktop event props ?? mobile (touch) event props
+    const _touchDelta = _eX - touchX
 
-    if (touchDelta > config.touchChangeThreshold) {
-      return handleMoveInteract('prev')
-    } else if (touchDelta * -1 > config.touchChangeThreshold) {
-      return handleMoveInteract('next')
-    }
+    scrub(`${offsetRef.current + _touchDelta}px`)
+  }
+
+  const handleTouchEnd = () => {
+    if (!config.touchControls) return
+    checkActiveItem()
+  }
+
+  // Handle move transform
+  const scrub = (val) => {
+    carouselItemsRef.current.style.transform = `translateX(${val})`
+  }
+
+  // Check which item is currently front and center
+  const checkActiveItem = (callback?) => {
+    const scrollItems = carouselItemsRef.current.children
+    const centerPoint = wrapperBox.width / 2
+    const centerPointBuffer = config.gap / 2
+
+    // Itterate over each child and check it's position
+    Array.from(scrollItems).map((child, index) => {
+      const childRect = child.getBoundingClientRect()
+
+      // If the childs left bounds are less than the center point and right bounds are greater than
+      // the center point, we've found our star!
+      if (
+        (childRect.left - wrapperBox.left - centerPointBuffer <= centerPoint &&
+        childRect.right - wrapperBox.left + centerPointBuffer >= centerPoint)
+        ||
+        (childRect.left > centerPoint && 0 === index) // check for first item
+        ||
+        (childRect.right < centerPoint && itemCount === index) // check for last item
+      ) {
+        snapToItem(index, false)
+        callback && callback(index)
+      }
+    })
   }
 
 
@@ -290,23 +321,24 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       changedIndex = currentIndex-1 > 0 ? currentIndex-1 : 0
     }
 
-    return setTransitionIndex(changedIndex)
+    return snapToItem(changedIndex)
   }
 
 
   // Interaction functions
   const nextCard = () => handleMoveInteract('next')
   const prevCard = () => handleMoveInteract('prev')
+  
   const goToCard = (index) => {
     if (
       !carouselItemsRef.current || 
       !carouselWrapperRef.current  
     ) return
-    const currentItem = carouselItemsRef.current.children.item(index)
-    const currentItemBox = currentItem.getBoundingClientRect()
-    const carouselWrapperBox = carouselWrapperRef.current.getBoundingClientRect()
-    if (!itemInView(currentItemBox, carouselWrapperBox, config.buffer)) {
-      setTransitionIndex(index)
+    const targetItem = carouselItemsRef.current.children.item(index)
+    const targetItemBox = targetItem.getBoundingClientRect()
+
+    if (!itemInView(targetItemBox, wrapperBox, config.buffer)) {
+      snapToItem(index)
     }
   }
 
@@ -329,12 +361,14 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // Main Carousel markup
   return (
-    <div
-      className={`cardCarousel ${itemsWrapperWidth !== 0 ? 'show' : ''}`}
-      onTouchStart={ handleTouchStart }
-      onTouchEnd={ handleTouchEnd }
-      style={{ "padding": `0 ${config.padding}px` }}>
-      <div className="cardCarousel-inner" ref={carouselWrapperRef}>
+    <div className={`cardCarousel ${itemsWrapperWidth !== 0 ? 'show' : ''}`} style={{ "padding": `0 ${config.padding}px` }}>
+      <div
+        className="cardCarousel-inner"
+        ref={carouselWrapperRef}
+        onTouchStart={ handleTouchStart }
+        onTouchMove={ handleTouchMove }
+        onTouchEnd={ handleTouchEnd }
+      >
         <div
           ref={carouselItemsRef}
           className="cardCarousel-items"
@@ -343,7 +377,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
             "alignItems": "center",  // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
             "width": itemsWrapperWidth !== 0 ? `${itemsWrapperWidth}px` : '99999px',
             "gap": `${config.gap}px`,
-            "transitionDuration": `${config.transitionSpeed}ms`
+            "transition": animateTransition ? `transform ease-in-out ${config.transitionSpeed}ms` : ''
           }}>
           { children?.map((child, key) => {
             return (

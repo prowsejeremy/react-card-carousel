@@ -70,16 +70,14 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null)
   const offsetRef = useRef<number>(0)
 
-  // Key Bounding Boxes
-  const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
-  const itemsBox = carouselItemsRef.current?.getBoundingClientRect()
-
-
   useEffect(() => {
     setConfig({
       ...defaultSettings,
       ...settings
     })
+
+    // update position in case the padding or gap have been changed
+    updateCarouselPosition()
   }, [settings])
 
 
@@ -127,7 +125,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       window.removeEventListener('resize', handleResize)
     }
 
-  }, [typeof window !== undefined, imagesLoaded])
+  }, [typeof window !== undefined, imagesLoaded, itemCount])
 
   
   // Handle resize of browser window
@@ -136,7 +134,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     setTimeout(() => {
       getItemWidth()
       getItemsWrapperWidth()
-    }, 100)
+    }, 200)
   }
 
 
@@ -146,7 +144,10 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   const updateCarouselPosition = () => {
 
-    if (itemsBox.width > wrapperBox.width) {
+    const itemsBox = carouselItemsRef.current?.getBoundingClientRect()
+    const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
+
+    if (itemsWrapperWidth > wrapperBox?.width) {
       setDisplayControls(true)
       
       // If at the end of the carousel, keep items against the right edge
@@ -167,6 +168,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
   const getItemWidth = () => {
+    const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
+
     if (config.cardsToShow !== 0 && carouselWrapperRef.current) {
       setItemWidth(wrapperBox.width/config.cardsToShow)
     }
@@ -202,7 +205,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
           Array.from(carouselChildren).map((child) =>
             checkIfCardImagesLoaded(child).then(() => {
               const childBox = child.getBoundingClientRect()
-              carouselWidth += itemWidth || childBox.width
+              carouselWidth += config.cardsToShow > 0 ? itemWidth : childBox.width
             })
           )
         ).then(() => {
@@ -213,7 +216,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       } else {
         Array.from(carouselChildren).map((child) => {
           const childBox = child.getBoundingClientRect()
-          carouselWidth += itemWidth || childBox.width
+          carouselWidth += config.cardsToShow > 0 ? itemWidth : childBox.width
         });
         setItemsWrapperWidth(carouselWidth + paddingWidth)
       }
@@ -236,6 +239,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
     if (!targetItem) return
 
+    const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
     const targetItemBox = targetItem.getBoundingClientRect()
 
     if (skipVisibleItems && itemInView(targetItemBox, wrapperBox, config.buffer)) {
@@ -286,6 +290,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // Check which item is currently front and center
   const checkActiveItem = (callback?) => {
+    const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
     const scrollItems = carouselItemsRef.current.children
     const centerPoint = wrapperBox.width / 2
     const centerPointBuffer = config.gap / 2
@@ -330,6 +335,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const prevCard = () => handleMoveInteract('prev')
   
   const goToCard = (index) => {
+    const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
+
     if (
       !carouselItemsRef.current || 
       !carouselWrapperRef.current  

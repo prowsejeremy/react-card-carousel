@@ -1465,7 +1465,6 @@ var css_248z = ".cardCarousel {\n  display: flex;\n  flex-direction: column;\n  
 styleInject(css_248z);
 
 const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
-    var _a, _b;
     const { children, settings } = props;
     const defaultSettings = {
         // Presentation settings
@@ -1499,11 +1498,10 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const carouselItemsRef = require$$0.useRef(null);
     const carouselWrapperRef = require$$0.useRef(null);
     const offsetRef = require$$0.useRef(0);
-    // Key Bounding Boxes
-    const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
-    const itemsBox = (_b = carouselItemsRef.current) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
     require$$0.useEffect(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
+        // update position in case the padding or gap have been changed
+        updateCarouselPosition();
     }, [settings]);
     require$$0.useEffect(() => {
         if (!(children === null || children === void 0 ? void 0 : children.length))
@@ -1540,20 +1538,23 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [typeof window !== undefined, imagesLoaded]);
+    }, [typeof window !== undefined, imagesLoaded, itemCount]);
     // Handle resize of browser window
     const handleResize = () => {
         setItemsWrapperWidth(99999);
         setTimeout(() => {
             getItemWidth();
             getItemsWrapperWidth();
-        }, 100);
+        }, 200);
     };
     // /////////////////////////////////
     // WIP - Tidy up reset on resize
     // /////////////////////////////////
     const updateCarouselPosition = () => {
-        if (itemsBox.width > wrapperBox.width) {
+        var _a, _b;
+        const itemsBox = (_a = carouselItemsRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
+        const wrapperBox = (_b = carouselWrapperRef.current) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
+        if (itemsWrapperWidth > (wrapperBox === null || wrapperBox === void 0 ? void 0 : wrapperBox.width)) {
             setDisplayControls(true);
             // If at the end of the carousel, keep items against the right edge
             const diff = (itemsBox.right - wrapperBox.right) * -1;
@@ -1571,6 +1572,8 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     };
     // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
     const getItemWidth = () => {
+        var _a;
+        const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         if (config.cardsToShow !== 0 && carouselWrapperRef.current) {
             setItemWidth(wrapperBox.width / config.cardsToShow);
         }
@@ -1594,7 +1597,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
             if (config.yieldToImages && !imagesLoaded) {
                 Promise.all(Array.from(carouselChildren).map((child) => checkIfCardImagesLoaded(child).then(() => {
                     const childBox = child.getBoundingClientRect();
-                    carouselWidth += itemWidth || childBox.width;
+                    carouselWidth += config.cardsToShow > 0 ? itemWidth : childBox.width;
                 }))).then(() => {
                     setImagesLoaded(true);
                     setItemsWrapperWidth(carouselWidth + paddingWidth);
@@ -1603,13 +1606,14 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
             else {
                 Array.from(carouselChildren).map((child) => {
                     const childBox = child.getBoundingClientRect();
-                    carouselWidth += itemWidth || childBox.width;
+                    carouselWidth += config.cardsToShow > 0 ? itemWidth : childBox.width;
                 });
                 setItemsWrapperWidth(carouselWidth + paddingWidth);
             }
         }
     };
     const snapToItem = (index_1, ...args_1) => __awaiter(void 0, [index_1, ...args_1], void 0, function* (index, skipVisibleItems = true) {
+        var _a;
         // Check if we are at the start of the list and haven't changed index,
         // if so just center to 0 and return.
         if (currentIndex === index && currentIndex === 0) {
@@ -1621,6 +1625,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         const targetItem = carouselItemsRef.current.children.item(index);
         if (!targetItem)
             return;
+        const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         const targetItemBox = targetItem.getBoundingClientRect();
         if (skipVisibleItems && itemInView(targetItemBox, wrapperBox, config.buffer)) {
             if (dir === 'next') {
@@ -1667,6 +1672,8 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     };
     // Check which item is currently front and center
     const checkActiveItem = (callback) => {
+        var _a;
+        const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         const scrollItems = carouselItemsRef.current.children;
         const centerPoint = wrapperBox.width / 2;
         const centerPointBuffer = config.gap / 2;
@@ -1701,6 +1708,8 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const nextCard = () => handleMoveInteract('next');
     const prevCard = () => handleMoveInteract('prev');
     const goToCard = (index) => {
+        var _a;
+        const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         if (!carouselItemsRef.current ||
             !carouselWrapperRef.current)
             return;

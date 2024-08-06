@@ -1501,7 +1501,6 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
     const itemsBox = (_b = carouselItemsRef.current) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
     useEffect(() => {
-        console.log('settings changed', settings);
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
     }, [settings]);
     useEffect(() => {
@@ -1546,7 +1545,6 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         setTimeout(() => {
             getItemWidth();
             getItemsWrapperWidth();
-            updateCarouselPosition();
         }, 100);
     };
     // /////////////////////////////////

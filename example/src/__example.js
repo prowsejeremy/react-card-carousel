@@ -1,10 +1,9 @@
 import { useRef } from 'react'
-import CardCarousel from "./__CardCarousel/index.tsx"
+import CardCarousel from './__CardCarousel/index.tsx'
 
 import './example.css'
 
 const CardCarouselExample = () => {
-
   const myCarouselRef = useRef()
 
   const settings = {
@@ -12,7 +11,7 @@ const CardCarouselExample = () => {
     arrows: true,
     touchControls: true,
     gap: 20,
-    padding: 80,
+    padding: 20,
     yieldToImages: true,
     cardsToShow: 0,
     beforeChange: (currentIndex, newIndex) => {
@@ -20,7 +19,7 @@ const CardCarouselExample = () => {
     },
     afterChange: (newIndex) => {
       console.log('After Change', newIndex)
-    }
+    },
   }
 
   const carouselItems = [
@@ -44,20 +43,20 @@ const CardCarouselExample = () => {
       image: 'https://picsum.photos/400/300',
       alt: 'my image alt text'
     },
-    // {
-    //   title: 'Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.',
-    //   alt: 'my image alt text'
-    // },
-    // {
-    //   title: 'Carousel Card 06',
-    //   image: 'https://picsum.photos/800/300',
-    //   alt: 'my image alt text'
-    // }
+    {
+      title:
+        'Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.',
+      alt: 'my image alt text'
+    },
+    {
+      title: 'Carousel Card 06',
+      image: 'https://picsum.photos/800/300',
+      alt: 'my image alt text'
+    },
   ]
 
   return (
     <div className='my-component'>
-
       {/* Optionally you can define your own completely custom buttons */}
       {/* <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button> */}
       {/* <button onClick={ () => myCarouselRef?.current?.nextCard() }>Next</button> */}

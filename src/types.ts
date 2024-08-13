@@ -18,6 +18,9 @@ export interface SettingsInterface {
   // Event hooks
   beforeChange?: (currentIndex: number, nextIndex: number) => void;
   afterChange?: (nextIndex: number) => void;
+  onTouchStart?: (startX: number) => void;
+  onTouchMove?: (moveX: number) => void;
+  onTouchEnd?: () => void;
 }
 
 export interface PropsInterface {
@@ -33,6 +36,7 @@ export interface ImperitiveHandleInterface {
 }
 
 export interface PaginationPropsInterface {
+  currentIndex: number;
   itemCount: number;
   goToCard: ImperitiveHandleInterface["goToCard"];
 }

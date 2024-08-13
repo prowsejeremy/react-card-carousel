@@ -4,6 +4,7 @@ const Pagination = (props:PaginationPropsInterface) => {
 
   const {
     itemCount,
+    currentIndex,
     goToCard
   } = props
 
@@ -14,7 +15,7 @@ const Pagination = (props:PaginationPropsInterface) => {
       <button
         key={index}
         onClick={() => goToCard(index)}
-        className="cardCarousel-pagination-button" /> 
+        className={`cardCarousel-pagination-button ${currentIndex === index ? 'active' : ''}`} /> 
     )
   }
 

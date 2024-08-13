@@ -118,6 +118,9 @@ export default MyComponent
 | ---- | ----------- |
 | beforeChange | Fires just before the change takes place, returns the currentIndex and the newIndex |
 | afterChange | Fires immediately after the change takes place, returns the newIndex |
+| onTouchStart | Fires immediately after the user touch starts, returns the startX |
+| onTouchMove | Fires immediately after the user touch move, returns the moveX |
+| onTouchEnd | Fires immediately after the user touch end, no return val |
 
 
 ### Functions

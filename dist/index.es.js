@@ -1575,20 +1575,8 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         var _a, _b;
         const itemsBox = (_a = carouselItemsRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         const wrapperBox = (_b = carouselWrapperRef.current) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
-        if ((itemsBox === null || itemsBox === void 0 ? void 0 : itemsBox.width) > (wrapperBox === null || wrapperBox === void 0 ? void 0 : wrapperBox.width)) {
-            setDisplayControls(true);
-            // // If at the end of the carousel, keep items against the right edge
-            // const diff = (itemsBox.right - wrapperBox.right) * -1
-            // if (diff >= 0) {
-            //   const moveVal = itemsBox.width - wrapperBox.width
-            //   carouselItemsRef.current.style.transform = `translateX(${-moveVal}px)`
-            // }
-        }
-        else {
-            // Check width of all child elements, if less than wrapper, don't render controls
-            // and reset to start of carousel
-            setDisplayControls(false);
-        }
+        // Only enable controls if the items container is larger than the wrapper.
+        setDisplayControls((itemsBox === null || itemsBox === void 0 ? void 0 : itemsBox.width) > (wrapperBox === null || wrapperBox === void 0 ? void 0 : wrapperBox.width));
         snapToItem(0);
     };
     // If cardsToShow has been set, calculate the width of each item based on the viewBox size.

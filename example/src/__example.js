@@ -7,6 +7,7 @@ const CardCarouselExample = () => {
   const myCarouselRef = useRef();
 
   const settings = {
+    centerMode: false,
     pagination: true,
     arrows: true,
     touchControls: true,

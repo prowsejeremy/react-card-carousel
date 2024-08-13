@@ -1,6 +1,6 @@
 {
   "name": "@jpd.nz/react-card-carousel",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "A basic card carousel for react, usable with items of either fixed or variable widths.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",

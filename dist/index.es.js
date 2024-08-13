@@ -1420,7 +1420,6 @@ const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
     if (!item || !(item instanceof HTMLElement) || !(itemsWrapper instanceof HTMLElement) || !viewBox)
         return;
     const itemsBox = itemsWrapper.getBoundingClientRect();
-    item.getBoundingClientRect();
     const maxLeft = 0;
     const maxRight = (itemsBox.width - viewBox.width) * -1;
     const returnObj = {
@@ -1444,6 +1443,13 @@ const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
         }
     }
     return returnObj;
+};
+const getCenterMoveVal = (item, viewBox) => {
+    if (!item || !(item instanceof HTMLElement) || !viewBox)
+        return;
+    const centerPoint = viewBox.width * 0.5;
+    const itemCenterPoint = item.offsetLeft + (item.offsetWidth * 0.5);
+    return centerPoint - itemCenterPoint;
 };
 
 function styleInject(css, ref) {
@@ -1486,6 +1492,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         cardsToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
         transitionSpeed: 300, // speed for transitions (ms)
         // Control settings
+        centerMode: false,
         yieldToImages: false,
         pagination: false,
         touchControls: true,
@@ -1511,6 +1518,8 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [animateTransition, setAnimateTransition] = useState(false);
     // Refs
+    const resizeTimer = useRef(null);
+    const previousWindowWidth = useRef(0);
     const carouselItemsRef = useRef(null);
     const carouselWrapperRef = useRef(null);
     const offsetRef = useRef(0);
@@ -1551,22 +1560,27 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // Add window resize listener
     useEffect(() => {
         window.addEventListener('resize', handleResize);
+        previousWindowWidth.current = window.innerWidth;
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, [typeof window !== undefined, imagesLoaded, itemCount]);
     // Handle resize of browser window
-    const resizeTimer = useRef(null);
     const handleResize = () => {
         clearTimeout(resizeTimer.current);
-        setItemsWrapperWidth(99999);
-        setIsResizing(true);
-        resizeTimer.current = setTimeout(() => {
-            setIsResizing(false);
-            getItemWidth();
-            getItemsWrapperWidth();
-            resizeTimer.current = null;
-        }, 500);
+        // Only handle resize if the width has changed, we don't care about the height.
+        // Mainly a fix for iOS Safari and mobile browsers which change browser height on scroll.
+        if (window.innerWidth !== previousWindowWidth.current) {
+            setItemsWrapperWidth(99999);
+            setIsResizing(true);
+            previousWindowWidth.current = window.innerWidth;
+            resizeTimer.current = setTimeout(() => {
+                setIsResizing(false);
+                getItemWidth();
+                getItemsWrapperWidth();
+                resizeTimer.current = null;
+            }, 500);
+        }
     };
     // /////////////////////////////////
     // WIP - Tidy up reset on resize
@@ -1626,30 +1640,39 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     };
     const snapToItem = (index) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
+        let newOffset = 0;
         // Check if we are at the start of the list and haven't changed index,
         // if so just center to 0 and return.
-        if (currentIndex === index && currentIndex === 0) {
-            offsetRef.current = 0;
+        if (currentIndex === index && currentIndex === 0 && !config.centerMode) {
+            offsetRef.current = newOffset;
             setAnimateTransition(true);
             return;
         }
-        let dir = index >= currentIndex ? 'next' : 'prev';
+        const dir = index >= currentIndex ? 'next' : 'prev';
         const targetItem = carouselItemsRef.current.children.item(index);
         if (!targetItem)
             return;
         const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         // trigger beforeChange listener
         config.beforeChange && config.beforeChange(currentIndex, index);
-        const { moveVal, atStart, atEnd } = yield getMoveVal(targetItem, carouselItemsRef.current, wrapperBox, dir);
-        // Update offset.
-        offsetRef.current = moveVal;
+        if (config.centerMode) {
+            // Get move calculation for centerMode
+            newOffset = yield getCenterMoveVal(targetItem, wrapperBox);
+        }
+        else {
+            // Get move calculation where not centerMode
+            const { moveVal, atStart, atEnd } = yield getMoveVal(targetItem, carouselItemsRef.current, wrapperBox, dir);
+            newOffset = moveVal;
+            // Update offset.
+            if (atStart) {
+                index = 0;
+            }
+            else if (atEnd) {
+                index = itemCount;
+            }
+        }
+        offsetRef.current = newOffset;
         setAnimateTransition(true);
-        if (atStart) {
-            index = 0;
-        }
-        else if (atEnd) {
-            index = itemCount;
-        }
         setCurrentIndex(index);
         config.afterChange && config.afterChange(index);
     });

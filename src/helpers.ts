@@ -15,7 +15,6 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
   if (!item || !(item instanceof HTMLElement) || !(itemsWrapper instanceof HTMLElement) || !viewBox) return
 
   const itemsBox = itemsWrapper.getBoundingClientRect()
-  const itemBox = item.getBoundingClientRect()
 
   const maxLeft = 0
   const maxRight = (itemsBox.width - viewBox.width) * -1
@@ -46,4 +45,13 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
   }
 
   return returnObj
+}
+
+export const getCenterMoveVal = (item:Element, viewBox:DOMRect): number => {
+  if (!item || !(item instanceof HTMLElement) || !viewBox) return
+
+  const centerPoint = viewBox.width * 0.5
+  const itemCenterPoint = item.offsetLeft + (item.offsetWidth * 0.5)
+
+  return centerPoint - itemCenterPoint
 }

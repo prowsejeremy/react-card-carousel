@@ -16,6 +16,7 @@ import ArrowButtons from './components/arrowButtons.tsx'
 import Pagination from './components/pagination.tsx'
 
 import {
+  getCenterMoveVal,
   getMoveVal
 } from './helpers.ts'
 
@@ -37,6 +38,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     transitionSpeed: 300, // speed for transitions (ms)
     
     // Control settings
+    centerMode: false,
     yieldToImages: false,
     pagination: false,
     touchControls: true,
@@ -69,6 +71,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const [animateTransition, setAnimateTransition] = useState<boolean>(false)
 
   // Refs
+  const resizeTimer = useRef<number | null>(null)
+  const previousWindowWidth = useRef<number>(0)
   const carouselItemsRef = useRef<HTMLDivElement | null>(null)
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null)
   const offsetRef = useRef<number>(0)
@@ -123,6 +127,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   // Add window resize listener
   useEffect(() => {
     window.addEventListener('resize', handleResize)
+    previousWindowWidth.current = window.innerWidth
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -132,18 +137,22 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   
   // Handle resize of browser window
-  const resizeTimer = useRef(null)
   const handleResize = () => {
     clearTimeout(resizeTimer.current)
-    setItemsWrapperWidth(99999)
-    setIsResizing(true)
+    // Only handle resize if the width has changed, we don't care about the height.
+    // Mainly a fix for iOS Safari and mobile browsers which change browser height on scroll.
+    if (window.innerWidth !== previousWindowWidth.current) {
+      setItemsWrapperWidth(99999)
+      setIsResizing(true)
+      previousWindowWidth.current = window.innerWidth
 
-    resizeTimer.current = setTimeout(() => {
-      setIsResizing(false)
-      getItemWidth()
-      getItemsWrapperWidth()
-      resizeTimer.current = null
-    }, 500)
+      resizeTimer.current = setTimeout(() => {
+        setIsResizing(false)
+        getItemWidth()
+        getItemsWrapperWidth()
+        resizeTimer.current = null
+      }, 500)
+    }
   }
 
 
@@ -225,16 +234,17 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   const snapToItem = async (index:number) => {
 
+    let newOffset = 0
+
     // Check if we are at the start of the list and haven't changed index,
     // if so just center to 0 and return.
-    if (currentIndex === index && currentIndex === 0) {
-      offsetRef.current = 0
+    if (currentIndex === index && currentIndex === 0 && !config.centerMode) {
+      offsetRef.current = newOffset
       setAnimateTransition(true)
       return
     }
  
-    let dir = index >= currentIndex ? 'next' : 'prev'
-
+    const dir = index >= currentIndex ? 'next' : 'prev'
     const targetItem = carouselItemsRef.current.children.item(index)
 
     if (!targetItem) return
@@ -244,17 +254,25 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       // trigger beforeChange listener
       config.beforeChange && config.beforeChange(currentIndex, index)
 
-      const {moveVal, atStart, atEnd} = await getMoveVal(targetItem, carouselItemsRef.current, wrapperBox, dir)
-      
-      // Update offset.
-      offsetRef.current = moveVal
-      setAnimateTransition(true)
-      if (atStart) { 
-        index = 0
-      } else if (atEnd) {
-        index = itemCount
+      if (config.centerMode) {
+        // Get move calculation for centerMode
+        newOffset = await getCenterMoveVal(targetItem, wrapperBox)
+
+      } else {
+        // Get move calculation where not centerMode
+        const {moveVal, atStart, atEnd} = await getMoveVal(targetItem, carouselItemsRef.current, wrapperBox, dir)
+
+        newOffset = moveVal
+        // Update offset.
+        if (atStart) { 
+          index = 0
+        } else if (atEnd) {
+          index = itemCount
+        }
       }
 
+      offsetRef.current = newOffset
+      setAnimateTransition(true)
       setCurrentIndex(index)
     
       config.afterChange && config.afterChange(index)

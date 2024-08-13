@@ -8,6 +8,7 @@ export interface SettingsInterface {
   transitionSpeed: number;
   
   // Control settings
+  centerMode: boolean,
   yieldToImages: boolean,
   pagination: boolean;
   touchControls: boolean;

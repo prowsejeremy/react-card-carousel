@@ -38,7 +38,6 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
     returnObj.moveVal = (item.offsetLeft - viewBox.width + item.offsetWidth) * -1
 
     if ((item.offsetLeft - viewBox.width + item.offsetWidth) * -1 >= 0) {
-      console.log('passed left?')
       returnObj.moveVal = maxLeft
       returnObj.atStart = true
     }
@@ -47,6 +46,7 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
   return returnObj
 }
 
+// Get distance to move when items are set to centerMode
 export const getCenterMoveVal = (item:Element, viewBox:DOMRect): number => {
   if (!item || !(item instanceof HTMLElement) || !viewBox) return
 

@@ -61,7 +61,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   
   // State
   const [touchX, setTouchX] = useState<number>(0)
-  const [displayControls, setDisplayControls] = useState<boolean>(false)
+  const [itemsContained, setItemsContained] = useState<boolean>(true) // Are the items contained within the items wrapper?
   const [itemWidth, setItemWidth] = useState<number>(0)
   const [isResizing, setIsResizing] = useState<boolean>(false)
   const [itemsWrapperWidth, setItemsWrapperWidth] = useState<number>(0)
@@ -95,6 +95,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     }
   }, [children])
 
+  // Animate to item
   useEffect(() => {
     if (animateTransition) {
       scrub(`${offsetRef.current}px`)
@@ -166,9 +167,13 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
 
     // Only enable controls if the items container is larger than the wrapper.
-    setDisplayControls(itemsBox?.width > wrapperBox?.width)
+    setItemsContained(itemsBox?.width <= wrapperBox?.width)
     snapToItem(0)
   }
+
+  useEffect(() => {
+    itemsContained && scrub(0)
+  }, [itemsContained])
 
 
   // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
@@ -309,6 +314,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   // Handle move transform
   const scrub = (val) => {
+    if (itemsContained || resizeTimer.current !== null) val = 0
     carouselItemsRef.current.style.transform = `translateX(${val})`
   }
 
@@ -395,7 +401,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       >
         <div
           ref={carouselItemsRef}
-          className="cardCarousel-items"
+          className={`cardCarousel-items ${config.centerMode ? 'itemsContained' : ''}`}
           style={{
             "display": "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
             "alignItems": "center",  // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
@@ -417,7 +423,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
         </div>
       </div>
       
-      {displayControls &&
+      {!itemsContained &&
         <>
           { config.pagination &&
             <Pagination

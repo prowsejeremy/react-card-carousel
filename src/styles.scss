@@ -29,6 +29,11 @@
 
   display: flex;
   align-items: center;
+  
+  // If the items don't exceed the width of the container, and is centermode center them.
+  &.itemsContained {
+    margin: 0 auto;
+  }
 }
 
 .cardCarousel-item-content {

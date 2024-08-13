@@ -1,16 +1,21 @@
-// Is the current item in view, checking the left and right borders of an item relative to the viewbox
-export const itemInView = (currentItemBox:DOMRect, viewBox:DOMRect, buffer:number=0): boolean => {
-  if (!currentItemBox || !viewBox) return
-  return (currentItemBox.left > (viewBox.left - buffer)) && (currentItemBox.right < (viewBox.right + buffer))
-}
+// ////////////////////////////////////////////////////////////////////////
+// Legacy, however keeping in case it is resurrected in a future build
+// ////////////////////////////////////////////////////////////////////////
+// // Is the current item in view, checking the left and right borders of an item relative to the viewbox
+// export const itemInView = (currentItemBox:DOMRect, viewBox:DOMRect, buffer:number=0): boolean => {
+//   if (!currentItemBox || !viewBox) return
+//   return (currentItemBox.left > (viewBox.left - buffer)) && (currentItemBox.right < (viewBox.right + buffer))
+// }
 
 interface getMoveValReturnObj {
   moveVal: number
   atStart: boolean
   atEnd: boolean
 }
+// ////////////////////////////////////////////////////////////////////////
+// Get value of how far to move, and if the start/end have been reached
+// ////////////////////////////////////////////////////////////////////////
 
-// Get the int value of how far to move
 export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, dir:string='next'): getMoveValReturnObj => {
   if (!item || !(item instanceof HTMLElement) || !(itemsWrapper instanceof HTMLElement) || !viewBox) return
 
@@ -46,7 +51,10 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
   return returnObj
 }
 
+// ////////////////////////////////////////////////////////////////////////
 // Get distance to move when items are set to centerMode
+// ////////////////////////////////////////////////////////////////////////
+
 export const getCenterMoveVal = (item:Element, viewBox:DOMRect): number => {
   if (!item || !(item instanceof HTMLElement) || !viewBox) return
 

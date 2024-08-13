@@ -31,7 +31,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
   const defaultSettings: SettingsInterface = {
     // Presentation settings
-    buffer: 50, // buffer for whether to switch to next card if it sits right on the border of the viewbox (px)
     gap: 20, // gap size between each card/silde (px)
     padding: 50, // padding either side of the viewbox.
     cardsToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
@@ -82,9 +81,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       ...defaultSettings,
       ...settings
     })
-
-    // update position in case the padding or gap have been changed
-    updateCarouselPosition()
   }, [JSON.stringify(settings)])
 
 
@@ -114,7 +110,14 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   // Run checks to reposition the carousel items on width change
   useEffect(() => {
     itemsWrapperWidth !== 0 && updateCarouselPosition()
-  }, [itemsWrapperWidth])
+  }, [
+    itemsWrapperWidth,
+    config.gap,
+    config.padding,
+    config.cardsToShow,
+    config.centerMode,
+    config.yieldToImages
+  ])
 
 
   // Set inital width for each card, if applicable

@@ -1,7 +1,6 @@
 import {ReactNode} from "react"
 
 export interface SettingsInterface {
-  buffer: number;
   gap: number;
   padding: number;
   cardsToShow: number;

@@ -1416,8 +1416,17 @@ const Pagination = (props) => {
     return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-pagination", children: paginationItems }));
 };
 
-// Is the current item in view, checking the left and right borders of an item relative to the viewbox
-// Get the int value of how far to move
+// ////////////////////////////////////////////////////////////////////////
+// Legacy, however keeping in case it is resurrected in a future build
+// ////////////////////////////////////////////////////////////////////////
+// // Is the current item in view, checking the left and right borders of an item relative to the viewbox
+// export const itemInView = (currentItemBox:DOMRect, viewBox:DOMRect, buffer:number=0): boolean => {
+//   if (!currentItemBox || !viewBox) return
+//   return (currentItemBox.left > (viewBox.left - buffer)) && (currentItemBox.right < (viewBox.right + buffer))
+// }
+// ////////////////////////////////////////////////////////////////////////
+// Get value of how far to move, and if the start/end have been reached
+// ////////////////////////////////////////////////////////////////////////
 const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
     if (!item || !(item instanceof HTMLElement) || !(itemsWrapper instanceof HTMLElement) || !viewBox)
         return;
@@ -1445,7 +1454,9 @@ const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
     }
     return returnObj;
 };
+// ////////////////////////////////////////////////////////////////////////
 // Get distance to move when items are set to centerMode
+// ////////////////////////////////////////////////////////////////////////
 const getCenterMoveVal = (item, viewBox) => {
     if (!item || !(item instanceof HTMLElement) || !viewBox)
         return;
@@ -1488,7 +1499,6 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const { children, settings } = props;
     const defaultSettings = {
         // Presentation settings
-        buffer: 50, // buffer for whether to switch to next card if it sits right on the border of the viewbox (px)
         gap: 20, // gap size between each card/silde (px)
         padding: 50, // padding either side of the viewbox.
         cardsToShow: 0, // Defines the width of each card, if set to 0 the width will be inherited from the each cards children
@@ -1527,8 +1537,6 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const offsetRef = require$$0.useRef(0);
     require$$0.useEffect(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
-        // update position in case the padding or gap have been changed
-        updateCarouselPosition();
     }, [JSON.stringify(settings)]);
     require$$0.useEffect(() => {
         if (!(children === null || children === void 0 ? void 0 : children.length))
@@ -1553,7 +1561,14 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     // Run checks to reposition the carousel items on width change
     require$$0.useEffect(() => {
         itemsWrapperWidth !== 0 && updateCarouselPosition();
-    }, [itemsWrapperWidth]);
+    }, [
+        itemsWrapperWidth,
+        config.gap,
+        config.padding,
+        config.cardsToShow,
+        config.centerMode,
+        config.yieldToImages
+    ]);
     // Set inital width for each card, if applicable
     require$$0.useEffect(() => {
         if (config.cardsToShow !== 0 && itemWidth === 0) {

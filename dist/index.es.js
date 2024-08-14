@@ -1,4 +1,4 @@
-import require$$0, { forwardRef, useState, useRef, useEffect, useImperativeHandle } from 'react';
+import require$$0, { forwardRef, useState, useRef, useMemo, useEffect, useImperativeHandle } from 'react';
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -1402,7 +1402,7 @@ var jsxRuntimeExports = jsxRuntime.exports;
 
 const ArrowButtons = (props) => {
     const { nextArrow, prevArrow, currentIndex, itemCount, prevCard, nextCard } = props;
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? 'disabled' : 'active'}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? 'disabled' : 'active'}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? 'disabled' : 'active'}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? 'disabled' : 'active'}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
 };
 
 const Pagination = (props) => {
@@ -1533,9 +1533,9 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     const carouselItemsRef = useRef(null);
     const carouselWrapperRef = useRef(null);
     const offsetRef = useRef(0);
-    useEffect(() => {
+    useMemo(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
-    }, [JSON.stringify(settings)]);
+    }, [settings]);
     useEffect(() => {
         if (!(children === null || children === void 0 ? void 0 : children.length))
             return;

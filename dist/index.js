@@ -1404,7 +1404,7 @@ var jsxRuntimeExports = jsxRuntime.exports;
 
 const ArrowButtons = (props) => {
     const { nextArrow, prevArrow, currentIndex, itemCount, prevCard, nextCard } = props;
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? 'disabled' : 'active'}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? 'disabled' : 'active'}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? 'disabled' : 'active'}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? 'disabled' : 'active'}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
 };
 
 const Pagination = (props) => {
@@ -1535,9 +1535,9 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const carouselItemsRef = require$$0.useRef(null);
     const carouselWrapperRef = require$$0.useRef(null);
     const offsetRef = require$$0.useRef(0);
-    require$$0.useEffect(() => {
+    require$$0.useMemo(() => {
         setConfig(Object.assign(Object.assign({}, defaultSettings), settings));
-    }, [JSON.stringify(settings)]);
+    }, [settings]);
     require$$0.useEffect(() => {
         if (!(children === null || children === void 0 ? void 0 : children.length))
             return;

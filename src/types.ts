@@ -49,3 +49,9 @@ export interface ArrowPropsInterface {
   prevCard: ImperitiveHandleInterface["prevCard"];
   nextCard: ImperitiveHandleInterface["nextCard"];
 }
+
+export interface getMoveValReturnObj {
+  moveVal: number
+  atStart: boolean
+  atEnd: boolean
+}

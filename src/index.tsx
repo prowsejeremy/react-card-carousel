@@ -10,6 +10,7 @@ import {
   useEffect,
   useRef,
   useImperativeHandle,
+  useMemo,
 } from 'react'
 
 import ArrowButtons from './components/arrowButtons.tsx'
@@ -76,12 +77,12 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null)
   const offsetRef = useRef<number>(0)
 
-  useEffect(() => {
+  useMemo(() => {
     setConfig({
       ...defaultSettings,
       ...settings
     })
-  }, [JSON.stringify(settings)])
+  }, [settings])
 
 
   useEffect(() => {

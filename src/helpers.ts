@@ -31,7 +31,7 @@ export const getMoveVal = (item:Element, itemsWrapper:Element, viewBox:DOMRect, 
   if (dir === 'next') {
     returnObj.moveVal = item.offsetLeft * -1
 
-    if (itemsBox.width - item.offsetLeft <= viewBox.right) {
+    if (itemsBox.width - item.offsetLeft <= viewBox.width) {
       returnObj.moveVal = maxRight
       returnObj.atEnd = true
     }

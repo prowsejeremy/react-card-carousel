@@ -1438,7 +1438,7 @@ const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
     };
     if (dir === 'next') {
         returnObj.moveVal = item.offsetLeft * -1;
-        if (itemsBox.width - item.offsetLeft <= viewBox.right) {
+        if (itemsBox.width - item.offsetLeft <= viewBox.width) {
             returnObj.moveVal = maxRight;
             returnObj.atEnd = true;
         }

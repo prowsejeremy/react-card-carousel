@@ -69,6 +69,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const [itemCount, setItemCount] = useState<number>(0)
   const [imagesLoaded, setImagesLoaded] = useState<boolean>(false)
   const [animateTransition, setAnimateTransition] = useState<boolean>(false)
+  const [scrolling, setScrolling] = useState<boolean>(true)
+  const [swiping, setSwiping] = useState<boolean>(true)
 
   // Refs
   const resizeTimer = useRef<number | null>(null)
@@ -179,7 +181,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     itemsContained && scrub(0)
   }, [itemsContained])
 
-
   // If cardsToShow has been set, calculate the width of each item based on the viewBox size.
   const getItemWidth = () => {
     const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
@@ -189,18 +190,20 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     }
   }
 
-
   // Check for the presense of images in the card content,
   // wait for them to load before calculating width of cards.
   const checkIfCardImagesLoaded = (element:Element) => {
-    const hasImages = element.getElementsByTagName('img')
+    const hasImages = element.querySelectorAll('img')
 
     if (!hasImages || typeof hasImages !== 'object') return Promise.resolve(true)
 
     return Promise.all(
-      Array.from(hasImages).map((img) =>
-        new Promise(resolve => { img.onload = img.onerror = resolve; })
-      )
+      Array.from(hasImages).map((img) => {
+        return new Promise(resolve => {
+          if (img.complete) resolve(1);
+          img.onload = img.onerror = resolve
+        })
+      })
     )
   }
 
@@ -222,7 +225,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
 
       if (config.yieldToImages && !imagesLoaded) {
         Promise.all(
-          Array.from(carouselChildren).map((child:any) =>
+          Array.from(carouselChildren).map((child:HTMLElement) =>
             checkIfCardImagesLoaded(child).then(() => {
               processWidth(child)
             })
@@ -261,7 +264,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     const wrapperBox = carouselWrapperRef.current?.getBoundingClientRect()
       
       // trigger beforeChange listener
-      config.beforeChange && config.beforeChange(currentIndex, index)
+      config.beforeChange && currentIndex !== index && config.beforeChange(currentIndex, index)
 
       if (config.centerMode) {
         // Get move calculation for centerMode
@@ -284,37 +287,72 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       setAnimateTransition(true)
       setCurrentIndex(index)
     
-      config.afterChange && config.afterChange(index)
+      config.afterChange && currentIndex !== index && config.afterChange(index)
   }
 
+  // //////////////////////////////////////////////////////¿
+  // Touch Controls
+  // //////////////////////////////////////////////////////¿
+
   const handleTouchStart = (e) => {
-    if (!config.touchControls) return
+    if (!config.touchControls || scrolling) return
     const _touchX = e.x ?? e?.changedTouches[0]?.clientX // desktop event props ?? mobile (touch) event props
     setTouchX(_touchX)
     config.onTouchStart && config.onTouchStart(_touchX)
   }
 
   const handleTouchMove = (e) => {
-    if (!config.touchControls) return
+    if (!config.touchControls || scrolling) return
     const _eX = e.x ?? e?.changedTouches[0]?.clientX // desktop event props ?? mobile (touch) event props
     const _touchDelta = _eX - touchX
     config.onTouchMove && config.onTouchMove(_touchDelta)
 
-    // If the user has interacted with the slider, disable scroll till they are done
-    if (Math.abs(_touchDelta) > 100) {
-      document.body.style.overflow = 'hidden'
+    // If the user has interacted with the carousel, set swiping to true
+    if (Math.abs(_touchDelta) > 5) {
+      setSwiping(true)
     }
 
-    scrub(`${offsetRef.current + _touchDelta}px`)
+    scrub(`${offsetRef.current + (_touchDelta * 1.25)}px`)
   }
 
   const handleTouchEnd = () => {
-    // Release the scroll back to the body
-    document.body.style.removeProperty('overflow')
+    // Release the scroll back to the body and remove swiping state
+    setScrolling(false)
+    setSwiping(false)
+
     if (!config.touchControls) return
     config.onTouchEnd && config.onTouchEnd()
     checkActiveItem()
   }
+
+  // Window touch listeners to disable scroll if user
+  // interacts with the carousel
+  let winTSY = 0
+
+  const winTSListener = (e) => { winTSY = e?.changedTouches[0]?.clientY }
+
+  const winTMListener = (e) => {
+    if (swiping) {
+      e.preventDefault()
+      return false
+    }
+
+    const winTMY = e?.changedTouches[0]?.clientY
+    if (Math.abs(winTSY - winTMY) > 5) {
+      setScrolling(true)
+    }
+  }
+
+  // Bind/unBind touch events to window
+  useEffect(() => {
+    window.addEventListener('touchstart', winTSListener)
+    window.addEventListener('touchmove', winTMListener, {passive: false})
+    return () => {
+      window.removeEventListener('touchstart', winTSListener)
+      window.removeEventListener('touchmove', winTMListener)
+    }
+  }, [swiping])
+
 
   // Handle move transform
   const scrub = (val) => {
@@ -364,7 +402,10 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   }
 
 
+  // //////////////////////////////////////////////////////¿
   // Interaction functions
+  // //////////////////////////////////////////////////////¿
+
   const nextCard = () => handleMoveInteract('next')
   const prevCard = () => handleMoveInteract('prev')
   
@@ -376,7 +417,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       snapToItem(index)
   }
 
-
   // Pass functions to external
   useImperativeHandle(carouselRef, () => ({
     nextCard,
@@ -386,14 +426,13 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   }));
 
   if (
-    !children?.length
+    !children?.length || children?.length < 1
   ) return null
 
-  if (
-    children.length < 1
-  ) return null
-
+  // //////////////////////////////////////////////////////¿
   // Main Carousel markup
+  // //////////////////////////////////////////////////////¿
+  
   return (
     <div className={`cardCarousel ${isResizing ? 'resizing' : ''} ${itemsWrapperWidth !== 0 ? 'show' : ''}`} style={{ "padding": `0 ${config.padding}px` }}>
       <div
@@ -429,7 +468,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       
       {!itemsContained &&
         <>
-          { config.pagination &&
+          { config.pagination && !isResizing &&
             <Pagination
               currentIndex={currentIndex}
               itemCount={itemCount}

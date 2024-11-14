@@ -1529,6 +1529,8 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const [itemCount, setItemCount] = require$$0.useState(0);
     const [imagesLoaded, setImagesLoaded] = require$$0.useState(false);
     const [animateTransition, setAnimateTransition] = require$$0.useState(false);
+    const [scrolling, setScrolling] = require$$0.useState(true);
+    const [swiping, setSwiping] = require$$0.useState(true);
     // Refs
     const resizeTimer = require$$0.useRef(null);
     const previousWindowWidth = require$$0.useRef(0);
@@ -1625,10 +1627,16 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     // Check for the presense of images in the card content,
     // wait for them to load before calculating width of cards.
     const checkIfCardImagesLoaded = (element) => {
-        const hasImages = element.getElementsByTagName('img');
+        const hasImages = element.querySelectorAll('img');
         if (!hasImages || typeof hasImages !== 'object')
             return Promise.resolve(true);
-        return Promise.all(Array.from(hasImages).map((img) => new Promise(resolve => { img.onload = img.onerror = resolve; })));
+        return Promise.all(Array.from(hasImages).map((img) => {
+            return new Promise(resolve => {
+                if (img.complete)
+                    resolve(1);
+                img.onload = img.onerror = resolve;
+            });
+        }));
     };
     // Get the inital wrapper width based on the width of all children with their associated padding values
     const getItemsWrapperWidth = () => {
@@ -1675,7 +1683,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
             return;
         const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         // trigger beforeChange listener
-        config.beforeChange && config.beforeChange(currentIndex, index);
+        config.beforeChange && currentIndex !== index && config.beforeChange(currentIndex, index);
         if (config.centerMode) {
             // Get move calculation for centerMode
             newOffset = yield getCenterMoveVal(targetItem, wrapperBox);
@@ -1695,11 +1703,14 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         offsetRef.current = newOffset;
         setAnimateTransition(true);
         setCurrentIndex(index);
-        config.afterChange && config.afterChange(index);
+        config.afterChange && currentIndex !== index && config.afterChange(index);
     });
+    // //////////////////////////////////////////////////////¿
+    // Touch Controls
+    // //////////////////////////////////////////////////////¿
     const handleTouchStart = (e) => {
         var _a, _b;
-        if (!config.touchControls)
+        if (!config.touchControls || scrolling)
             return;
         const _touchX = (_a = e.x) !== null && _a !== void 0 ? _a : (_b = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _b === void 0 ? void 0 : _b.clientX; // desktop event props ?? mobile (touch) event props
         setTouchX(_touchX);
@@ -1707,25 +1718,50 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     };
     const handleTouchMove = (e) => {
         var _a, _b;
-        if (!config.touchControls)
+        if (!config.touchControls || scrolling)
             return;
         const _eX = (_a = e.x) !== null && _a !== void 0 ? _a : (_b = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _b === void 0 ? void 0 : _b.clientX; // desktop event props ?? mobile (touch) event props
         const _touchDelta = _eX - touchX;
         config.onTouchMove && config.onTouchMove(_touchDelta);
-        // If the user has interacted with the slider, disable scroll till they are done
-        if (Math.abs(_touchDelta) > 100) {
-            document.body.style.overflow = 'hidden';
+        // If the user has interacted with the carousel, set swiping to true
+        if (Math.abs(_touchDelta) > 5) {
+            setSwiping(true);
         }
-        scrub(`${offsetRef.current + _touchDelta}px`);
+        scrub(`${offsetRef.current + (_touchDelta * 1.25)}px`);
     };
     const handleTouchEnd = () => {
-        // Release the scroll back to the body
-        document.body.style.removeProperty('overflow');
+        // Release the scroll back to the body and remove swiping state
+        setScrolling(false);
+        setSwiping(false);
         if (!config.touchControls)
             return;
         config.onTouchEnd && config.onTouchEnd();
         checkActiveItem();
     };
+    // Window touch listeners to disable scroll if user
+    // interacts with the carousel
+    let winTSY = 0;
+    const winTSListener = (e) => { var _a; winTSY = (_a = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _a === void 0 ? void 0 : _a.clientY; };
+    const winTMListener = (e) => {
+        var _a;
+        if (swiping) {
+            e.preventDefault();
+            return false;
+        }
+        const winTMY = (_a = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _a === void 0 ? void 0 : _a.clientY;
+        if (Math.abs(winTSY - winTMY) > 5) {
+            setScrolling(true);
+        }
+    };
+    // Bind/unBind touch events to window
+    require$$0.useEffect(() => {
+        window.addEventListener('touchstart', winTSListener);
+        window.addEventListener('touchmove', winTMListener, { passive: false });
+        return () => {
+            window.removeEventListener('touchstart', winTSListener);
+            window.removeEventListener('touchmove', winTMListener);
+        };
+    }, [swiping]);
     // Handle move transform
     const scrub = (val) => {
         if (itemsContained || resizeTimer.current !== null)
@@ -1766,7 +1802,9 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         }
         return snapToItem(changedIndex);
     };
+    // //////////////////////////////////////////////////////¿
     // Interaction functions
+    // //////////////////////////////////////////////////////¿
     const nextCard = () => handleMoveInteract('next');
     const prevCard = () => handleMoveInteract('prev');
     const goToCard = (index) => {
@@ -1782,11 +1820,11 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         goToCard: (index) => goToCard(index),
         getCurrentIndex: () => { return currentIndex; }
     }));
-    if (!(children === null || children === void 0 ? void 0 : children.length))
+    if (!(children === null || children === void 0 ? void 0 : children.length) || (children === null || children === void 0 ? void 0 : children.length) < 1)
         return null;
-    if (children.length < 1)
-        return null;
+    // //////////////////////////////////////////////////////¿
     // Main Carousel markup
+    // //////////////////////////////////////////////////////¿
     return (jsxRuntimeExports.jsxs("div", { className: `cardCarousel ${isResizing ? 'resizing' : ''} ${itemsWrapperWidth !== 0 ? 'show' : ''}`, style: { "padding": `0 ${config.padding}px` }, children: [jsxRuntimeExports.jsx("div", { className: "cardCarousel-inner", ref: carouselWrapperRef, onTouchStart: handleTouchStart, onTouchMove: handleTouchMove, onTouchEnd: handleTouchEnd, children: jsxRuntimeExports.jsx("div", { ref: carouselItemsRef, className: `cardCarousel-items ${config.centerMode ? 'itemsContained' : ''}`, style: {
                         "display": "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
                         "alignItems": "center", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
@@ -1796,7 +1834,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
                     }, children: children === null || children === void 0 ? void 0 : children.map((child, key) => {
                         return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { "width": `${itemWidth}px` } : {}, children: child }, key));
                     }) }) }), !itemsContained &&
-                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination &&
+                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination && !isResizing &&
                             jsxRuntimeExports.jsx(Pagination, { currentIndex: currentIndex, itemCount: itemCount, goToCard: goToCard }), config.arrows &&
                             jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard })] })] }));
 });

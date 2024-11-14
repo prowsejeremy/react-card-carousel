@@ -69,8 +69,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
   const [itemCount, setItemCount] = useState<number>(0)
   const [imagesLoaded, setImagesLoaded] = useState<boolean>(false)
   const [animateTransition, setAnimateTransition] = useState<boolean>(false)
-  const [scrolling, setScrolling] = useState<boolean>(true)
-  const [swiping, setSwiping] = useState<boolean>(true)
+  const [scrolling, setScrolling] = useState<boolean>(false)
+  const [swiping, setSwiping] = useState<boolean>(false)
 
   // Refs
   const resizeTimer = useRef<number | null>(null)
@@ -100,7 +100,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
       scrub(`${offsetRef.current}px`)
       setTimeout(() => {setAnimateTransition(false)}, config.transitionSpeed)
     }
-  }, [animateTransition])
+  }, [animateTransition, config.transitionSpeed])
 
 
   // Set inital width for the carousel items
@@ -343,13 +343,20 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     }
   }
 
+  const winTEListener = (e) => {
+    setScrolling(false)
+    setSwiping(false)
+  }
+
   // Bind/unBind touch events to window
   useEffect(() => {
     window.addEventListener('touchstart', winTSListener)
     window.addEventListener('touchmove', winTMListener, {passive: false})
+    window.addEventListener('touchend', winTEListener)
     return () => {
       window.removeEventListener('touchstart', winTSListener)
       window.removeEventListener('touchmove', winTMListener)
+      window.removeEventListener('touchend', winTEListener)
     }
   }, [swiping])
 

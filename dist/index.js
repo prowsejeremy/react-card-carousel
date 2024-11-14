@@ -1529,8 +1529,8 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     const [itemCount, setItemCount] = require$$0.useState(0);
     const [imagesLoaded, setImagesLoaded] = require$$0.useState(false);
     const [animateTransition, setAnimateTransition] = require$$0.useState(false);
-    const [scrolling, setScrolling] = require$$0.useState(true);
-    const [swiping, setSwiping] = require$$0.useState(true);
+    const [scrolling, setScrolling] = require$$0.useState(false);
+    const [swiping, setSwiping] = require$$0.useState(false);
     // Refs
     const resizeTimer = require$$0.useRef(null);
     const previousWindowWidth = require$$0.useRef(0);
@@ -1553,7 +1553,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
             scrub(`${offsetRef.current}px`);
             setTimeout(() => { setAnimateTransition(false); }, config.transitionSpeed);
         }
-    }, [animateTransition]);
+    }, [animateTransition, config.transitionSpeed]);
     // Set inital width for the carousel items
     require$$0.useEffect(() => {
         if (itemCount !== 0 && itemsWrapperWidth === 0) {
@@ -1753,13 +1753,19 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
             setScrolling(true);
         }
     };
+    const winTEListener = (e) => {
+        setScrolling(false);
+        setSwiping(false);
+    };
     // Bind/unBind touch events to window
     require$$0.useEffect(() => {
         window.addEventListener('touchstart', winTSListener);
         window.addEventListener('touchmove', winTMListener, { passive: false });
+        window.addEventListener('touchend', winTEListener);
         return () => {
             window.removeEventListener('touchstart', winTSListener);
             window.removeEventListener('touchmove', winTMListener);
+            window.removeEventListener('touchend', winTEListener);
         };
     }, [swiping]);
     // Handle move transform

@@ -1,15 +1,53 @@
+/* First example */
 .my-component {
-  margin: 50vh 0;
+  margin: 25vh 0;
 }
 
-.my-carousel-card {
+.my-component .my-carousel-card {
   min-width: 300px;
+}
 
-  @media screen and (max-width: 460px) {
+@media screen and (max-width: 460px) {
+  .my-component .my-carousel-card {
     max-width: 300px;
   }
 }
 
-.my-carousel-card img {
+.my-component .my-carousel-card img {
   width: 100%;
+}
+
+
+/* Second example */
+.my-inline-component {
+  margin: 25vh 0;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 50px;
+  width: 100%;
+  padding: 0 40px;
+}
+
+.my-inline-component .intro {
+  max-width: 500px;
+}
+
+.my-inline-component .my-carousel-card {
+  width: 300px;
+  border: 3px solid #232323;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.my-inline-component .my-carousel-card img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.my-inline-component .my-carousel-card p {
+  padding: 0 10px;
 }

@@ -1,4 +1,5 @@
 import CardCarouselExample from './__example';
+import CardCarouselExampleTwo from './__exampleTwo';
 
 function App() {
   return (
@@ -7,6 +8,8 @@ function App() {
         <h1>React Card Carousel</h1>
       </div>
       <CardCarouselExample />
+
+      <CardCarouselExampleTwo />
     </div>
   );
 }

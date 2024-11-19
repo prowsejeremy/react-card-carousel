@@ -1562,8 +1562,9 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
     }, [carouselItemsRef.current, itemCount]);
     // Run checks to reposition the carousel items on width change
     require$$0.useEffect(() => {
-        itemsWrapperWidth !== 0 && updateCarouselPosition();
+        !isResizing && itemsWrapperWidth !== 0 && updateCarouselPosition();
     }, [
+        isResizing,
         itemsWrapperWidth,
         config.gap,
         config.padding,
@@ -1590,11 +1591,21 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         clearTimeout(resizeTimer.current);
         // Only handle resize if the width has changed, we don't care about the height.
         // Mainly a fix for iOS Safari and mobile browsers which change browser height on scroll.
+        // Lock the width, height and position of certain elements to ensure resizing doesn't
+        // mess with the page layout.
         if (window.innerWidth !== previousWindowWidth.current) {
+            const currentCarouselWrapper = carouselWrapperRef.current.getBoundingClientRect();
+            carouselWrapperRef.current.style.width = `${currentCarouselWrapper.width}px`;
+            carouselWrapperRef.current.style.height = `${currentCarouselWrapper.height}px`;
+            carouselItemsRef.current.style.position = 'absolute';
             setItemsWrapperWidth(99999);
             setIsResizing(true);
             previousWindowWidth.current = window.innerWidth;
+            // Reset everything once resizing has finished.
             resizeTimer.current = setTimeout(() => {
+                carouselItemsRef.current.style.removeProperty('position');
+                carouselWrapperRef.current.style.removeProperty('width');
+                carouselWrapperRef.current.style.removeProperty('height');
                 setIsResizing(false);
                 getItemWidth();
                 getItemsWrapperWidth();
@@ -1840,7 +1851,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
                     }, children: children === null || children === void 0 ? void 0 : children.map((child, key) => {
                         return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { "width": `${itemWidth}px` } : {}, children: child }, key));
                     }) }) }), !itemsContained &&
-                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination && !isResizing &&
+                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination &&
                             jsxRuntimeExports.jsx(Pagination, { currentIndex: currentIndex, itemCount: itemCount, goToCard: goToCard }), config.arrows &&
                             jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard })] })] }));
 });

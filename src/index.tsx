@@ -115,7 +115,14 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     !isResizing && itemsWrapperWidth !== 0 && updateCarouselPosition()
   }, [
     isResizing,
-    itemsWrapperWidth,
+    itemsWrapperWidth
+  ])
+
+  // Run checks to resize and reposition the carousel on config changes
+  useEffect(() => {
+    getItemsWrapperWidth()
+    updateCarouselPosition()
+  }, [
     config.gap,
     config.padding,
     config.cardsToShow,

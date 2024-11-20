@@ -1565,7 +1565,13 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         !isResizing && itemsWrapperWidth !== 0 && updateCarouselPosition();
     }, [
         isResizing,
-        itemsWrapperWidth,
+        itemsWrapperWidth
+    ]);
+    // Run checks to resize and reposition the carousel on config changes
+    require$$0.useEffect(() => {
+        getItemsWrapperWidth();
+        updateCarouselPosition();
+    }, [
         config.gap,
         config.padding,
         config.cardsToShow,

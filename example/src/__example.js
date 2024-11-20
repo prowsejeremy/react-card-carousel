@@ -12,7 +12,7 @@ const CardCarouselExample = () => {
     arrows: true,
     touchControls: true,
     gap: 20,
-    padding: 20,
+    padding: 40,
     yieldToImages: true,
     cardsToShow: 0,
     beforeChange: (currentIndex, newIndex) => {

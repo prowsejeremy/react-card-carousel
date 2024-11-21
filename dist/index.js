@@ -1572,6 +1572,7 @@ const CardCarousel = require$$0.forwardRef((props, carouselRef) => {
         getItemsWrapperWidth();
         updateCarouselPosition();
     }, [
+        itemCount,
         config.gap,
         config.padding,
         config.cardsToShow,

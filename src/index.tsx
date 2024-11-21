@@ -86,7 +86,6 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     })
   }, [settings])
 
-
   useEffect(() => {
     if (!children?.length) return
     if (itemCount !== children.length-1) {
@@ -123,6 +122,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>((prop
     getItemsWrapperWidth()
     updateCarouselPosition()
   }, [
+    itemCount,
     config.gap,
     config.padding,
     config.cardsToShow,

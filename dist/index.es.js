@@ -1570,6 +1570,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         getItemsWrapperWidth();
         updateCarouselPosition();
     }, [
+        itemCount,
         config.gap,
         config.padding,
         config.cardsToShow,

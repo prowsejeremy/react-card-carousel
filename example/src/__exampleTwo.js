@@ -13,7 +13,7 @@ const CardCarouselExample = () => {
     touchControls: true,
     gap: 20,
     padding: 0,
-    yieldToImages: true,
+    yieldToImages: false,
     cardsToShow: 0,
     beforeChange: (currentIndex, newIndex) => {
       console.log("Before Change", currentIndex, newIndex);

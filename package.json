@@ -4,6 +4,7 @@
   "description": "A basic card carousel for react, usable with items of either fixed or variable widths.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
+  "types": "dist/types.d.ts",
   "scripts": {
     "build": "npx rollup -c"
   },

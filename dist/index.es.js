@@ -751,16 +751,16 @@ var jsxRuntimeExports = jsxRuntime.exports;
 
 const ArrowButtons = (props) => {
     const { nextArrow, prevArrow, currentIndex, itemCount, prevCard, nextCard } = props;
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? 'disabled' : 'active'}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? 'disabled' : 'active'}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow prev-button ${currentIndex === 0 ? "disabled" : "active"}`, onClick: prevCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: prevArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) }), jsxRuntimeExports.jsx("button", { className: `cardCarousel-arrow next-button ${currentIndex === itemCount ? "disabled" : "active"}`, onClick: nextCard, children: jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: nextArrow || jsxRuntimeExports.jsx("span", { className: "cardCarousel-arrow-inner" }) }) })] }));
 };
 
 const Pagination = (props) => {
     const { itemCount, currentIndex, goToCard } = props;
     const paginationItems = [];
     for (let index = 0; index <= itemCount; index++) {
-        paginationItems.push(jsxRuntimeExports.jsx("button", { onClick: () => goToCard(index), className: `cardCarousel-pagination-button ${currentIndex === index ? 'active' : ''}` }, index));
+        paginationItems.push(jsxRuntimeExports.jsx("button", { onClick: () => goToCard(index), className: `cardCarousel-pagination-button ${currentIndex === index ? "active" : ""}` }, index));
     }
-    return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-pagination", children: paginationItems }));
+    return jsxRuntimeExports.jsx("div", { className: "cardCarousel-pagination", children: paginationItems });
 };
 
 // ////////////////////////////////////////////////////////////////////////
@@ -774,8 +774,11 @@ const Pagination = (props) => {
 // ////////////////////////////////////////////////////////////////////////
 // Get value of how far to move, and if the start/end have been reached
 // ////////////////////////////////////////////////////////////////////////
-const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
-    if (!item || !(item instanceof HTMLElement) || !(itemsWrapper instanceof HTMLElement) || !viewBox)
+const getMoveVal = (item, itemsWrapper, viewBox, dir = "next") => {
+    if (!item ||
+        !(item instanceof HTMLElement) ||
+        !(itemsWrapper instanceof HTMLElement) ||
+        !viewBox)
         return;
     const itemsBox = itemsWrapper.getBoundingClientRect();
     const maxLeft = 0;
@@ -783,17 +786,18 @@ const getMoveVal = (item, itemsWrapper, viewBox, dir = 'next') => {
     const returnObj = {
         moveVal: 0,
         atStart: false,
-        atEnd: false
+        atEnd: false,
     };
-    if (dir === 'next') {
+    if (dir === "next") {
         returnObj.moveVal = item.offsetLeft * -1;
         if (itemsBox.width - item.offsetLeft <= viewBox.width) {
             returnObj.moveVal = maxRight;
             returnObj.atEnd = true;
         }
     }
-    if (dir === 'prev') {
-        returnObj.moveVal = (item.offsetLeft - viewBox.width + item.offsetWidth) * -1;
+    if (dir === "prev") {
+        returnObj.moveVal =
+            (item.offsetLeft - viewBox.width + item.offsetWidth) * -1;
         if ((item.offsetLeft - viewBox.width + item.offsetWidth) * -1 >= 0) {
             returnObj.moveVal = maxLeft;
             returnObj.atStart = true;
@@ -808,7 +812,7 @@ const getCenterMoveVal = (item, viewBox) => {
     if (!item || !(item instanceof HTMLElement) || !viewBox)
         return;
     const centerPoint = viewBox.width * 0.5;
-    const itemCenterPoint = item.offsetLeft + (item.offsetWidth * 0.5);
+    const itemCenterPoint = item.offsetLeft + item.offsetWidth * 0.5;
     return centerPoint - itemCenterPoint;
 };
 
@@ -898,7 +902,9 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     useEffect(() => {
         if (animateTransition) {
             scrub(`${offsetRef.current}px`);
-            setTimeout(() => { setAnimateTransition(false); }, config.transitionSpeed);
+            setTimeout(() => {
+                setAnimateTransition(false);
+            }, config.transitionSpeed);
         }
     }, [animateTransition, config.transitionSpeed]);
     // Set inital width for the carousel items
@@ -910,10 +916,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // Run checks to reposition the carousel items on width change
     useEffect(() => {
         !isResizing && itemsWrapperWidth !== 0 && updateCarouselPosition();
-    }, [
-        isResizing,
-        itemsWrapperWidth
-    ]);
+    }, [isResizing, itemsWrapperWidth]);
     // Run checks to resize and reposition the carousel on config changes
     useEffect(() => {
         getItemsWrapperWidth();
@@ -924,7 +927,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         config.padding,
         config.cardsToShow,
         config.centerMode,
-        config.yieldToImages
+        config.yieldToImages,
     ]);
     // Set inital width for each card, if applicable
     useEffect(() => {
@@ -934,10 +937,10 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     }, [carouselWrapperRef.current]);
     // Add window resize listener
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
         previousWindowWidth.current = window.innerWidth;
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener("resize", handleResize);
         };
     }, [typeof window !== undefined, imagesLoaded, itemCount]);
     // Handle resize of browser window
@@ -951,15 +954,15 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             const currentCarouselWrapper = carouselWrapperRef.current.getBoundingClientRect();
             carouselWrapperRef.current.style.width = `${currentCarouselWrapper.width}px`;
             carouselWrapperRef.current.style.height = `${currentCarouselWrapper.height}px`;
-            carouselItemsRef.current.style.position = 'absolute';
+            carouselItemsRef.current.style.position = "absolute";
             setItemsWrapperWidth(99999);
             setIsResizing(true);
             previousWindowWidth.current = window.innerWidth;
             // Reset everything once resizing has finished.
             resizeTimer.current = setTimeout(() => {
-                carouselItemsRef.current.style.removeProperty('position');
-                carouselWrapperRef.current.style.removeProperty('width');
-                carouselWrapperRef.current.style.removeProperty('height');
+                carouselItemsRef.current.style.removeProperty("position");
+                carouselWrapperRef.current.style.removeProperty("width");
+                carouselWrapperRef.current.style.removeProperty("height");
                 setIsResizing(false);
                 getItemWidth();
                 getItemsWrapperWidth();
@@ -992,11 +995,11 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // Check for the presense of images in the card content,
     // wait for them to load before calculating width of cards.
     const checkIfCardImagesLoaded = (element) => {
-        const hasImages = element.querySelectorAll('img');
-        if (!hasImages || typeof hasImages !== 'object')
+        const hasImages = element.querySelectorAll("img");
+        if (!hasImages || typeof hasImages !== "object")
             return Promise.resolve(true);
         return Promise.all(Array.from(hasImages).map((img) => {
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 if (img.complete)
                     resolve(1);
                 img.onload = img.onerror = resolve;
@@ -1042,13 +1045,15 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             setAnimateTransition(true);
             return;
         }
-        const dir = index >= currentIndex ? 'next' : 'prev';
+        const dir = index >= currentIndex ? "next" : "prev";
         const targetItem = carouselItemsRef.current.children.item(index);
         if (!targetItem)
             return;
         const wrapperBox = (_a = carouselWrapperRef.current) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
         // trigger beforeChange listener
-        config.beforeChange && currentIndex !== index && config.beforeChange(currentIndex, index);
+        config.beforeChange &&
+            currentIndex !== index &&
+            config.beforeChange(currentIndex, index);
         if (config.centerMode) {
             // Get move calculation for centerMode
             newOffset = yield getCenterMoveVal(targetItem, wrapperBox);
@@ -1092,7 +1097,7 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         if (Math.abs(_touchDelta) > 5) {
             setSwiping(true);
         }
-        scrub(`${offsetRef.current + (_touchDelta * 1.25)}px`);
+        scrub(`${offsetRef.current + _touchDelta * 1.25}px`);
     };
     const handleTouchEnd = () => {
         // Release the scroll back to the body and remove swiping state
@@ -1106,7 +1111,10 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // Window touch listeners to disable scroll if user
     // interacts with the carousel
     let winTSY = 0;
-    const winTSListener = (e) => { var _a; winTSY = (_a = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _a === void 0 ? void 0 : _a.clientY; };
+    const winTSListener = (e) => {
+        var _a;
+        winTSY = (_a = e === null || e === void 0 ? void 0 : e.changedTouches[0]) === null || _a === void 0 ? void 0 : _a.clientY;
+    };
     const winTMListener = (e) => {
         var _a;
         if (swiping) {
@@ -1124,13 +1132,13 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     };
     // Bind/unBind touch events to window
     useEffect(() => {
-        window.addEventListener('touchstart', winTSListener);
-        window.addEventListener('touchmove', winTMListener, { passive: false });
-        window.addEventListener('touchend', winTEListener);
+        window.addEventListener("touchstart", winTSListener);
+        window.addEventListener("touchmove", winTMListener, { passive: false });
+        window.addEventListener("touchend", winTEListener);
         return () => {
-            window.removeEventListener('touchstart', winTSListener);
-            window.removeEventListener('touchmove', winTMListener);
-            window.removeEventListener('touchend', winTEListener);
+            window.removeEventListener("touchstart", winTSListener);
+            window.removeEventListener("touchmove", winTMListener);
+            window.removeEventListener("touchend", winTEListener);
         };
     }, [swiping]);
     // Handle move transform
@@ -1151,12 +1159,12 @@ const CardCarousel = forwardRef((props, carouselRef) => {
             const childRect = child.getBoundingClientRect();
             // If the childs left bounds are less than the center point and right bounds are greater than
             // the center point, we've found our star!
-            if ((childRect.left - wrapperBox.left - centerPointBuffer <= centerPoint &&
-                childRect.right - wrapperBox.left + centerPointBuffer >= centerPoint)
-                ||
-                    (childRect.left > centerPoint && 0 === index) // check for first item
-                ||
-                    (childRect.right < centerPoint && itemCount === index) // check for last item
+            if ((childRect.left - wrapperBox.left - centerPointBuffer <=
+                centerPoint &&
+                childRect.right - wrapperBox.left + centerPointBuffer >=
+                    centerPoint) ||
+                (childRect.left > centerPoint && 0 === index) || // check for first item
+                (childRect.right < centerPoint && itemCount === index) // check for last item
             ) {
                 snapToItem(index);
             }
@@ -1165,8 +1173,9 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // Generic movement function called by next / prev movement interactions.
     const handleMoveInteract = (dir) => {
         let changedIndex = 0;
-        if (dir === 'next') {
-            changedIndex = currentIndex + 1 < itemCount ? currentIndex + 1 : itemCount;
+        if (dir === "next") {
+            changedIndex =
+                currentIndex + 1 < itemCount ? currentIndex + 1 : itemCount;
         }
         else {
             changedIndex = currentIndex - 1 > 0 ? currentIndex - 1 : 0;
@@ -1176,11 +1185,10 @@ const CardCarousel = forwardRef((props, carouselRef) => {
     // //////////////////////////////////////////////////////¿
     // Interaction functions
     // //////////////////////////////////////////////////////¿
-    const nextCard = () => handleMoveInteract('next');
-    const prevCard = () => handleMoveInteract('prev');
+    const nextCard = () => handleMoveInteract("next");
+    const prevCard = () => handleMoveInteract("prev");
     const goToCard = (index) => {
-        if (!carouselItemsRef.current ||
-            !carouselWrapperRef.current)
+        if (!carouselItemsRef.current || !carouselWrapperRef.current)
             return;
         snapToItem(index);
     };
@@ -1189,25 +1197,26 @@ const CardCarousel = forwardRef((props, carouselRef) => {
         nextCard,
         prevCard,
         goToCard: (index) => goToCard(index),
-        getCurrentIndex: () => { return currentIndex; }
+        getCurrentIndex: () => {
+            return currentIndex;
+        },
     }));
     if (!(children === null || children === void 0 ? void 0 : children.length) || (children === null || children === void 0 ? void 0 : children.length) < 1)
         return null;
     // //////////////////////////////////////////////////////¿
     // Main Carousel markup
     // //////////////////////////////////////////////////////¿
-    return (jsxRuntimeExports.jsxs("div", { className: `cardCarousel ${isResizing ? 'resizing' : ''} ${itemsWrapperWidth !== 0 ? 'show' : ''}`, style: { "padding": `0 ${config.padding}px` }, children: [jsxRuntimeExports.jsx("div", { className: "cardCarousel-inner", ref: carouselWrapperRef, onTouchStart: handleTouchStart, onTouchMove: handleTouchMove, onTouchEnd: handleTouchEnd, children: jsxRuntimeExports.jsx("div", { ref: carouselItemsRef, className: `cardCarousel-items ${config.centerMode ? 'itemsContained' : ''}`, style: {
-                        "display": "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
-                        "alignItems": "center", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
-                        "width": itemsWrapperWidth !== 0 ? `${itemsWrapperWidth}px` : '99999px',
-                        "gap": `${config.gap}px`,
-                        "transition": animateTransition ? `transform ease-in-out ${config.transitionSpeed}ms` : ''
+    return (jsxRuntimeExports.jsxs("div", { className: `cardCarousel ${isResizing ? "resizing" : ""} ${itemsWrapperWidth !== 0 ? "show" : ""}`, style: { padding: `0 ${config.padding}px` }, children: [jsxRuntimeExports.jsx("div", { className: "cardCarousel-inner", ref: carouselWrapperRef, onTouchStart: handleTouchStart, onTouchMove: handleTouchMove, onTouchEnd: handleTouchEnd, children: jsxRuntimeExports.jsx("div", { ref: carouselItemsRef, className: `cardCarousel-items ${config.centerMode ? "itemsContained" : ""}`, style: {
+                        display: "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
+                        alignItems: "center", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
+                        width: itemsWrapperWidth !== 0 ? `${itemsWrapperWidth}px` : "99999px",
+                        gap: `${config.gap}px`,
+                        transition: animateTransition
+                            ? `transform ease-in-out ${config.transitionSpeed}ms`
+                            : "",
                     }, children: children === null || children === void 0 ? void 0 : children.map((child, key) => {
-                        return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { "width": `${itemWidth}px` } : {}, children: child }, key));
-                    }) }) }), !itemsContained &&
-                jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination &&
-                            jsxRuntimeExports.jsx(Pagination, { currentIndex: currentIndex, itemCount: itemCount, goToCard: goToCard }), config.arrows &&
-                            jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard })] })] }));
+                        return (jsxRuntimeExports.jsx("div", { className: "cardCarousel-item-content", "data-active": key === currentIndex, style: itemWidth ? { width: `${itemWidth}px` } : {}, children: child }, key));
+                    }) }) }), !itemsContained && (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [config.pagination && (jsxRuntimeExports.jsx(Pagination, { currentIndex: currentIndex, itemCount: itemCount, goToCard: goToCard })), config.arrows && (jsxRuntimeExports.jsx(ArrowButtons, { nextArrow: config.nextArrow, prevArrow: config.prevArrow, currentIndex: currentIndex, prevCard: prevCard, itemCount: itemCount, nextCard: nextCard }))] }))] }));
 });
 
 export { CardCarousel as default };

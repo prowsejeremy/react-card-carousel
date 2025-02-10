@@ -1,14 +1,14 @@
-import {ReactNode} from "react"
+import { ReactNode } from "react";
 
 export interface SettingsInterface {
   gap: number;
   padding: number;
   cardsToShow: number;
   transitionSpeed: number;
-  
+
   // Control settings
-  centerMode: boolean,
-  yieldToImages: boolean,
+  centerMode: boolean;
+  yieldToImages: boolean;
   pagination: boolean;
   touchControls: boolean;
   arrows: boolean;
@@ -29,10 +29,10 @@ export interface PropsInterface {
 }
 
 export interface ImperitiveHandleInterface {
-  nextCard: () => void
-  prevCard: () => void
-  goToCard: (index: number) => void
-  getCurrentIndex: () => number
+  nextCard: () => void;
+  prevCard: () => void;
+  goToCard: (index: number) => void;
+  getCurrentIndex: () => number;
 }
 
 export interface PaginationPropsInterface {
@@ -51,7 +51,7 @@ export interface ArrowPropsInterface {
 }
 
 export interface getMoveValReturnObj {
-  moveVal: number
-  atStart: boolean
-  atEnd: boolean
+  moveVal: number;
+  atStart: boolean;
+  atEnd: boolean;
 }

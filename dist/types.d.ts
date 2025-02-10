@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
 export interface SettingsInterface {
-    gap: number;
-    padding: number;
-    cardsToShow: number;
-    transitionSpeed: number;
-    centerMode: boolean;
-    yieldToImages: boolean;
-    pagination: boolean;
-    touchControls: boolean;
-    arrows: boolean;
+    gap?: number;
+    padding?: number;
+    cardsToShow?: number;
+    transitionSpeed?: number;
+    centerMode?: boolean;
+    yieldToImages?: boolean;
+    pagination?: boolean;
+    touchControls?: boolean;
+    arrows?: boolean;
     nextArrow?: null | ReactNode | HTMLElement;
     prevArrow?: null | ReactNode | HTMLElement;
     beforeChange?: (currentIndex: number, nextIndex: number) => void;

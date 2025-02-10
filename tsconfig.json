@@ -9,6 +9,7 @@
     "allowImportingTsExtensions": true,
     "declaration": true,
     "declarationDir": "dist",
+    "allowSyntheticDefaultImports": true,
     "emitDeclarationOnly": true,
   },
   "include": [

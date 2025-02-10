@@ -4,7 +4,7 @@ import {
   ImperitiveHandleInterface,
 } from "./types.ts";
 
-import {
+import React, {
   forwardRef,
   useState,
   useEffect,
@@ -21,7 +21,7 @@ import { getCenterMoveVal, getMoveVal } from "./helpers.ts";
 import "./styles.scss";
 
 const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>(
-  (props, carouselRef) => {
+  (props, carouselRef): React.JSX.Element => {
     const { children, settings } = props;
 
     const defaultSettings: SettingsInterface = {

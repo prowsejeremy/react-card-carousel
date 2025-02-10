@@ -8,14 +8,10 @@ To play around with the example code, head over to the [github repo](https://git
 
 ### Install
 
-Instal the package via npm or yarn:
+Instal the package via your package manager of choice:
 
 ~~~terminal
-npm i -s '@jpd.nz/react-card-carousel'
-~~~
-
-~~~terminal
-yarn add '@jpd.nz/react-card-carousel'
+npm | yarn | pnpm install '@jpd.nz/react-card-carousel'
 ~~~
 
 

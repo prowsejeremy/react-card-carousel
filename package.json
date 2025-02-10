@@ -1,10 +1,10 @@
 {
   "name": "@jpd.nz/react-card-carousel",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "A basic card carousel for react, usable with items of either fixed or variable widths.",
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "types": "dist/types.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "npx rollup -c"
   },

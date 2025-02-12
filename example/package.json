@@ -3,17 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "typescript": "^5.3.3"
   },
   "scripts": {
-    "start": "mkdir -p src/__CardCarousel && cp -r ../src/* src/__CardCarousel/ && react-scripts start"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
+    "start": "mkdir -p src/__CardCarousel && cp -r ../dist/* src/__CardCarousel/ && react-scripts start"
   },
   "browserslist": {
     "production": [
@@ -26,5 +27,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-react-app": "^7.0.1"
   }
 }

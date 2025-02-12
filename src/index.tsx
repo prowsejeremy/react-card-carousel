@@ -119,12 +119,15 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>(
       itemCount,
       config.gap,
       config.padding,
-      config.cardsToShow,
       config.centerMode,
       config.yieldToImages,
       // Item width change
       itemWidth,
     ]);
+
+    useEffect(() => {
+      getItemWidth();
+    }, [config.cardsToShow]);
 
     // Set inital width for each card, if applicable
     useEffect(() => {

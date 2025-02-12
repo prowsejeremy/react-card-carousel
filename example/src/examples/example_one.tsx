@@ -1,10 +1,12 @@
 import { useRef } from "react";
-import CardCarousel from "./__CardCarousel/index.tsx";
+import CardCarousel from "../__CardCarousel";
+
+import { ImperitiveHandleInterface } from "../__CardCarousel/types.ts";
 
 import "./example.css";
 
 const CardCarouselExample = () => {
-  const myCarouselRef = useRef();
+  const myCarouselRef = useRef<ImperitiveHandleInterface>(null);
 
   const settings = {
     centerMode: false,
@@ -23,7 +25,7 @@ const CardCarouselExample = () => {
     },
   };
 
-  const carouselItems = [
+  const carouselItems: { image?: string; alt?: string; title?: string }[] = [
     {
       title: "Carousel Card 01",
       image: "https://picsum.photos/300/300",

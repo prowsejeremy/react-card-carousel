@@ -1,6 +1,7 @@
-import CardCarouselExample from "./__example";
-import CardCarouselExampleTwo from "./__exampleTwo";
-import CardCarouselExampleThree from "./__exampleThree";
+// Examples
+import CardCarouselExample from "./examples/example_one";
+import CardCarouselExampleTwo from "./examples/example_two";
+import CardCarouselExampleThree from "./examples/example_three";
 
 function App() {
   return (
@@ -8,8 +9,8 @@ function App() {
       <div className="exampleSection">
         <h1>React Card Carousel</h1>
       </div>
-      <CardCarouselExample />
 
+      <CardCarouselExample />
       <CardCarouselExampleTwo />
       <CardCarouselExampleThree />
     </div>

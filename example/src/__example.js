@@ -41,8 +41,7 @@ const CardCarouselExample = () => {
     },
     {
       title:
-        "Carousel Card 05 which has no card on purpose to show what happens when you provide mixed content.",
-      alt: "my image alt text",
+        "Carousel Card 05 has no image on purpose to show what happens when you provide mixed content.",
     },
     {
       title: "Carousel Card 04",
@@ -58,6 +57,9 @@ const CardCarouselExample = () => {
 
   return (
     <div className="my-component">
+      <div className="intro">
+        <h2>Mixed Content Carousel</h2>
+      </div>
       {/* Optionally you can define your own completely custom buttons */}
       {/* <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button> */}
       {/* <button onClick={ () => myCarouselRef?.current?.nextCard() }>Next</button> */}
@@ -69,7 +71,7 @@ const CardCarouselExample = () => {
               {card.image && (
                 <img src={card.image} alt={card.title || card.alt} />
               )}
-              {card.title && <p>{card.title}</p>}
+              {card.title && <h2>{card.title}</h2>}
             </div>
           );
         })}

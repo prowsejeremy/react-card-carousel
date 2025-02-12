@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1",
-    "sass": "^1.69.5"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "mkdir -p src/__CardCarousel && cp -r ../src/* src/__CardCarousel/ && react-scripts start"

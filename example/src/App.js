@@ -1,5 +1,6 @@
-import CardCarouselExample from './__example';
-import CardCarouselExampleTwo from './__exampleTwo';
+import CardCarouselExample from "./__example";
+import CardCarouselExampleTwo from "./__exampleTwo";
+import CardCarouselExampleThree from "./__exampleThree";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <CardCarouselExample />
 
       <CardCarouselExampleTwo />
+      <CardCarouselExampleThree />
     </div>
   );
 }

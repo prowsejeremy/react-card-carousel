@@ -11,10 +11,10 @@ const CardCarouselExample = () => {
     pagination: true,
     arrows: true,
     touchControls: true,
-    gap: 0,
+    gap: 20,
     padding: 0,
     yieldToImages: false,
-    cardsToShow: 1,
+    cardsToShow: 0,
     beforeChange: (currentIndex, newIndex) => {
       console.log("Before Change", currentIndex, newIndex);
     },
@@ -25,36 +25,36 @@ const CardCarouselExample = () => {
 
   const carouselItems = [
     {
-      image: "https://picsum.photos/1920/802",
+      title: "Carousel Card 01",
+      image: "https://picsum.photos/300/300",
       alt: "my image alt text",
     },
     {
-      image: "https://picsum.photos/1920/801",
+      title: "Carousel Card 02",
+      image: "https://picsum.photos/150/300",
       alt: "my image alt text",
     },
     {
-      image: "https://picsum.photos/1920/804",
-      alt: "my image alt text",
-    },
-    {
-      image: "https://picsum.photos/1920/799",
-      alt: "my image alt text",
-    },
-    {
-      image: "https://picsum.photos/1920/798",
+      title: "Carousel Card 03",
+      image: "https://picsum.photos/500/300",
       alt: "my image alt text",
     },
   ];
 
   return (
-    <div className="my-component-full-width">
-      <div className="intro">
-        <h2>Full Width Slider</h2>
-      </div>
+    <div className="my-inline-component">
       {/* Optionally you can define your own completely custom buttons */}
       {/* <button onClick={ () => myCarouselRef?.current?.prevCard() }>Prev</button> */}
       {/* <button onClick={ () => myCarouselRef?.current?.nextCard() }>Next</button> */}
 
+      <div className="intro">
+        <h2>Card Carousel</h2>
+        <p>
+          This is the intro, the content is to the right of this description and
+          sits in a carousel component. As you resize the page this carousel
+          should move beneath me and add arrows / pagination as needed.
+        </p>
+      </div>
       <CardCarousel ref={myCarouselRef} settings={settings}>
         {carouselItems?.map((card, key) => {
           return (
@@ -62,6 +62,7 @@ const CardCarouselExample = () => {
               {card.image && (
                 <img src={card.image} alt={card.title || card.alt} />
               )}
+              {card.title && <h4>{card.title}</h4>}
             </div>
           );
         })}

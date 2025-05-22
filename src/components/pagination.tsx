@@ -1,3 +1,4 @@
+import React from "react";
 import { PaginationPropsInterface } from "../types.ts";
 
 const Pagination = (props: PaginationPropsInterface) => {
@@ -10,9 +11,8 @@ const Pagination = (props: PaginationPropsInterface) => {
       <button
         key={index}
         onClick={() => goToCard(index)}
-        className={`cardCarousel-pagination-button ${
-          currentIndex === index ? "active" : ""
-        }`}
+        className={`cardCarousel-pagination-button ${currentIndex === index ? "active" : ""
+          }`}
       />
     );
   }

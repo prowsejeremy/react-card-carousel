@@ -402,7 +402,7 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>(
           (childRect.left - wrapperBox.left - centerPointBuffer <=
             centerPoint &&
             childRect.right - wrapperBox.left + centerPointBuffer >=
-              centerPoint) ||
+            centerPoint) ||
           (childRect.left > centerPoint && 0 === index) || // check for first item
           (childRect.right < centerPoint && itemCount === index) // check for last item
         ) {
@@ -456,9 +456,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>(
 
     return (
       <div
-        className={`cardCarousel ${isResizing ? "resizing" : ""} ${
-          itemsWrapperWidth !== 0 ? "show" : ""
-        }`}
+        className={`cardCarousel ${isResizing ? "resizing" : ""} ${itemsWrapperWidth !== 0 ? "show" : ""
+          }`}
         style={{ padding: `0 ${config.padding}px` }}
       >
         <div
@@ -470,9 +469,8 @@ const CardCarousel = forwardRef<ImperitiveHandleInterface, PropsInterface>(
         >
           <div
             ref={carouselItemsRef}
-            className={`cardCarousel-items ${
-              config.centerMode ? "itemsContained" : ""
-            }`}
+            className={`cardCarousel-items ${config.centerMode ? "itemsContained" : ""
+              }`}
             style={{
               display: "flex", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs
               alignItems: "center", // Here as a placeholder value so that rendering is correct if a delay in loading styles occurs

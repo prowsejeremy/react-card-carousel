@@ -1,23 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "jsx": "react-jsx",
-    "lib": ["es6", "dom", "es2016"],
-    "target": "es6",
-    "moduleResolution": "Node",
+    "target": "ES2015",
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "esModuleInterop": true,
+    "strict": true,
     "noEmit": true,
+    "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
     "declaration": true,
     "declarationDir": "dist",
-    "allowSyntheticDefaultImports": true,
-    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "jsx": "react"
   },
-  "include": [
-    "./src/**/*.tsx",
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "example",
-    "node_modules"
-  ]
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"],
+  "exclude": ["example", "node_modules"]
 }

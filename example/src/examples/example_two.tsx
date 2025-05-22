@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import CardCarousel from "../__CardCarousel";
 
-import { ImperitiveHandleInterface } from "../__CardCarousel/types.ts";
+import { ImperitiveHandleInterface } from "../__CardCarousel/dist/types";
 
 import "./example.css";
 

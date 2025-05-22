@@ -1,12 +1,9 @@
 {
   "name": "@jpd.nz/react-card-carousel",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "A basic card carousel for react, usable with items of either fixed or variable widths.",
   "author": "Jeremy Prowse <jpd.nz> (https://jpd.nz)",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.es.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "npx rollup -c"
   },
@@ -18,8 +15,8 @@
     "react",
     "carousel",
     "slider",
-    "javascript",
-    "js"
+    "typescript",
+    "ts"
   ],
   "files": [
     "dist",
@@ -34,10 +31,10 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.24.7",
+    "@babel/core": "^7.27.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-node-resolve": "^15.3.1",
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -49,5 +46,22 @@
     "sass": "^1.77.7",
     "tslib": "^2.6.3",
     "typescript": "^5.3.3"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.es.js",
+  "umd": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/esm/types.d.ts",
+        "default": "./dist/esm/index.es.js"
+      },
+      "require": {
+        "types": "./dist/cjs/types.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
   }
 }

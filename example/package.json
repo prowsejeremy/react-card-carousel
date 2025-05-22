@@ -14,7 +14,7 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "start": "mkdir -p src/__CardCarousel && cp -r ../dist/* src/__CardCarousel/ && react-scripts start"
+    "start": "mkdir -p src/__CardCarousel && cp -r ../dist src/__CardCarousel/ && cp -r ../package.json src/__CardCarousel/ && react-scripts start"
   },
   "browserslist": {
     "production": [

@@ -12,7 +12,11 @@ const ArrowButtons = (props: ArrowPropsInterface) => {
           }`}
         onClick={prevCard}
       >
-        <>{prevArrow || <span className="cardCarousel-arrow-inner" />}</>
+        {React.isValidElement(prevArrow) ?
+          prevArrow
+          :
+          <span className="cardCarousel-arrow-inner" />
+        }
       </button>
 
       <button
@@ -20,7 +24,11 @@ const ArrowButtons = (props: ArrowPropsInterface) => {
           }`}
         onClick={nextCard}
       >
-        <>{nextArrow || <span className="cardCarousel-arrow-inner" />}</>
+        {React.isValidElement(nextArrow) ?
+          nextArrow
+          :
+          <span className="cardCarousel-arrow-inner" />
+        }
       </button>
     </>
   );

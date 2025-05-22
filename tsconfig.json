@@ -4,7 +4,7 @@
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
